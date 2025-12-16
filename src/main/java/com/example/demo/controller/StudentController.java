@@ -1,4 +1,7 @@
 
+
+
+@RestController
 public class StudentController{
-    
+
 }
