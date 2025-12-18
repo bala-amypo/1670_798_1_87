@@ -16,27 +16,38 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // Constructor injection (MANDATORY)
+    // ✅ REQUIRED CONSTRUCTOR ORDER
     public UserServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder) {
+
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public User registerUser(User user) {
-        if (userRepository.findByEmail(user.getEmail()) != null) {
+
+        if (userRepository.existsByEmail(user.getEmail())) {
             throw new ValidationException("Email already in use");
         }
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(
+                passwordEncoder.encode(user.getPassword())
+        );
+
+        if (user.getRole() == null) {
+            user.setRole("USER");
+        }
+
         return userRepository.save(user);
     }
 
     @Override
     public User getUser(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found")
+                );
     }
 
     @Override
