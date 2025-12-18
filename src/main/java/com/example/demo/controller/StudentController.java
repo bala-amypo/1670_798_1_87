@@ -1,7 +1,0 @@
-
-
-
-@RestController
-public class StudentController{
-
-}
