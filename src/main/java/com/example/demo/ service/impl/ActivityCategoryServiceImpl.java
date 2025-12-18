@@ -14,7 +14,6 @@ public class ActivityCategoryServiceImpl implements ActivityCategoryService {
 
     private final ActivityCategoryRepository categoryRepository;
 
-    // ⚠️ Constructor order EXACT
     public ActivityCategoryServiceImpl(ActivityCategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
     }
@@ -30,8 +29,7 @@ public class ActivityCategoryServiceImpl implements ActivityCategoryService {
     @Override
     public ActivityCategory getCategory(Long id) {
         return categoryRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Category not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
     }
 
     @Override
