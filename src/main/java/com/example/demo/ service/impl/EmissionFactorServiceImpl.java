@@ -17,10 +17,11 @@ public class EmissionFactorServiceImpl implements EmissionFactorService {
     private final EmissionFactorRepository emissionFactorRepository;
     private final ActivityTypeRepository activityTypeRepository;
 
-    // 🔴 Constructor injection order MUST MATCH test suite
+    // ✅ CONSTRUCTOR ORDER AS REQUIRED
     public EmissionFactorServiceImpl(
             EmissionFactorRepository emissionFactorRepository,
             ActivityTypeRepository activityTypeRepository) {
+
         this.emissionFactorRepository = emissionFactorRepository;
         this.activityTypeRepository = activityTypeRepository;
     }
@@ -34,10 +35,17 @@ public class EmissionFactorServiceImpl implements EmissionFactorService {
 
         ActivityType activityType = activityTypeRepository.findById(activityTypeId)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Category not found"));
+                        new ResourceNotFoundException("Activity type not found")
+                );
+
+        EmissionFactor existing =
+                emissionFactorRepository.findByActivityType_Id(activityTypeId);
+
+        if (existing != null) {
+            throw new ValidationException("Emission factor not found");
+        }
 
         factor.setActivityType(activityType);
-
         return emissionFactorRepository.save(factor);
     }
 
@@ -45,14 +53,21 @@ public class EmissionFactorServiceImpl implements EmissionFactorService {
     public EmissionFactor getFactor(Long id) {
         return emissionFactorRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Emission factor not found"));
+                        new ResourceNotFoundException("Emission factor not found")
+                );
     }
 
     @Override
     public EmissionFactor getFactorByType(Long typeId) {
-        return emissionFactorRepository.findByActivityType_Id(typeId)
-                .orElseThrow(() ->
-                        new ValidationException("No emission factor configured"));
+
+        EmissionFactor factor =
+                emissionFactorRepository.findByActivityType_Id(typeId);
+
+        if (factor == null) {
+            throw new ValidationException("No emission factor configured");
+        }
+
+        return factor;
     }
 
     @Override
