@@ -36,14 +36,3 @@ public class EmissionFactorServiceImpl implements EmissionFactorService {
         return factorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Emission factor not found"));
     }
-
-    @Override
-    public EmissionFactor getFactorByType(Long typeId) {
-        return factorRepository.findByActivityType_Id(typeId);
-    }
-
-    @Override
-    public List<EmissionFactor> getAllFactors() {
-        return factorRepository.findAll();
-    }
-}
