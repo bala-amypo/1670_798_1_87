@@ -1,5 +1,6 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.entity.ActivityType;
 import com.example.demo.entity.EmissionFactor;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.ActivityTypeRepository;
@@ -15,7 +16,6 @@ public class EmissionFactorServiceImpl implements EmissionFactorService {
     private final EmissionFactorRepository factorRepository;
     private final ActivityTypeRepository typeRepository;
 
-    // ⚠️ Constructor order EXACT
     public EmissionFactorServiceImpl(EmissionFactorRepository factorRepository,
                                      ActivityTypeRepository typeRepository) {
         this.factorRepository = factorRepository;
@@ -24,30 +24,14 @@ public class EmissionFactorServiceImpl implements EmissionFactorService {
 
     @Override
     public EmissionFactor createFactor(Long activityTypeId, EmissionFactor factor) {
-        factor.setActivityType(
-                typeRepository.findById(activityTypeId)
-                        .orElseThrow(() ->
-                                new ResourceNotFoundException("Category not found"))
-        );
+        ActivityType type = typeRepository.findById(activityTypeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Activity type not found"));
+
+        factor.setActivityType(type);
         return factorRepository.save(factor);
     }
 
     @Override
     public EmissionFactor getFactor(Long id) {
         return factorRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Emission factor not found"));
-    }
-
-    @Override
-    public EmissionFactor getFactorByType(Long typeId) {
-        return factorRepository.findByActivityType_Id(typeId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Emission factor not found"));
-    }
-
-    @Override
-    public List<EmissionFactor> getAllFactors() {
-        return factorRepository.findAll();
-    }
-}
+                .orElseThrow(() -> new

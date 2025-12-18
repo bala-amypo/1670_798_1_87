@@ -16,7 +16,6 @@ public class ActivityTypeServiceImpl implements ActivityTypeService {
     private final ActivityTypeRepository typeRepository;
     private final ActivityCategoryRepository categoryRepository;
 
-    // ⚠️ Constructor order EXACT
     public ActivityTypeServiceImpl(ActivityTypeRepository typeRepository,
                                    ActivityCategoryRepository categoryRepository) {
         this.typeRepository = typeRepository;
@@ -26,8 +25,7 @@ public class ActivityTypeServiceImpl implements ActivityTypeService {
     @Override
     public ActivityType createType(Long categoryId, ActivityType type) {
         ActivityCategory category = categoryRepository.findById(categoryId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Category not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
 
         type.setCategory(category);
         return typeRepository.save(type);
@@ -36,8 +34,7 @@ public class ActivityTypeServiceImpl implements ActivityTypeService {
     @Override
     public ActivityType getType(Long id) {
         return typeRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Category not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Activity type not found"));
     }
 
     @Override
