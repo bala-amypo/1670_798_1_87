@@ -34,32 +34,40 @@ public class AuthController {
     
     @PostMapping("/register")
     @Operation(summary = "Register a new user")
-    public ResponseEntity<User> register(@RequestBody RegisterRequest registerRequest) {
-        User user = new User();
-        user.setFullName(registerRequest.getName());
-        user.setEmail(registerRequest.getEmail());
-        user.setPassword(registerRequest.getPassword());
-        
-        User registeredUser = userService.registerUser(user);
-        return ResponseEntity.ok(registeredUser);
+    public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
+        try {
+            User user = new User();
+            user.setFullName(registerRequest.getName());
+            user.setEmail(registerRequest.getEmail());
+            user.setPassword(registerRequest.getPassword());
+            
+            User registeredUser = userService.registerUser(user);
+            return ResponseEntity.ok(registeredUser);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
     
     @PostMapping("/login")
     @Operation(summary = "Login and get JWT token")
-    public ResponseEntity<JwtResponse> login(@RequestBody LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                loginRequest.getEmail(),
-                loginRequest.getPassword()
-            )
-        );
-        
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        
-        User user = userService.getByEmail(loginRequest.getEmail());
-        String token = jwtUtil.generateTokenForUser(user);
-        
-        JwtResponse response = new JwtResponse(token, user.getEmail(), user.getRole(), user.getId());
-        return ResponseEntity.ok(response);
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    loginRequest.getEmail(),
+                    loginRequest.getPassword()
+                )
+            );
+            
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            
+            User user = userService.getByEmail(loginRequest.getEmail());
+            String token = jwtUtil.generateTokenForUser(user);
+            
+            JwtResponse response = new JwtResponse(token, user.getEmail(), user.getRole(), user.getId());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body("Invalid email or password");
+        }
     }
 }
