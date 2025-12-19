@@ -1,40 +1,52 @@
 package com.example.demo.security;
 
 import com.example.demo.entity.User;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class JwtUtil {
 
-    private static final String SECRET_KEY = "carbon_footprint_secret_key";
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 10; // 10 hours
+    private final String SECRET = "secretkey123";
 
-    public String generateToken(User user) {
+    public String generateToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
-                .setSubject(user.getEmail())
+                .setClaims(claims)
+                .setSubject(subject)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                .signWith(SignatureAlgorithm.HS256, SECRET)
                 .compact();
     }
 
+    public String generateTokenForUser(User user) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", user.getId());
+        claims.put("role", user.getRole());
+        return generateToken(claims, user.getEmail());
+    }
+
     public String extractUsername(String token) {
-        return getClaims(token).getSubject();
+        return parseToken(token).getBody().getSubject();
     }
 
-    public boolean isTokenValid(String token) {
-        return !getClaims(token).getExpiration().before(new Date());
+    public String extractRole(String token) {
+        return parseToken(token).getBody().get("role", String.class);
     }
 
-    private Claims getClaims(String token) {
-        return Jwts.parser()
-                .setSigningKey(SECRET_KEY)
-                .parseClaimsJws(token)
-                .getBody();
+    public Long extractUserId(String token) {
+        return parseToken(token).getBody().get("userId", Long.class);
+    }
+
+    public boolean isTokenValid(String token, String username) {
+        return extractUsername(token).equals(username);
+    }
+
+    public Jws<Claims> parseToken(String token) {
+        return Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token);
     }
 }

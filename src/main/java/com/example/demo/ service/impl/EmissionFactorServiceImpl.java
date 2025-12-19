@@ -14,64 +14,46 @@ import java.util.List;
 @Service
 public class EmissionFactorServiceImpl implements EmissionFactorService {
 
-    private final EmissionFactorRepository emissionFactorRepository;
-    private final ActivityTypeRepository activityTypeRepository;
+    private final EmissionFactorRepository factorRepository;
+    private final ActivityTypeRepository typeRepository;
 
-    // ✅ CONSTRUCTOR ORDER AS REQUIRED
-    public EmissionFactorServiceImpl(
-            EmissionFactorRepository emissionFactorRepository,
-            ActivityTypeRepository activityTypeRepository) {
-
-        this.emissionFactorRepository = emissionFactorRepository;
-        this.activityTypeRepository = activityTypeRepository;
+    public EmissionFactorServiceImpl(EmissionFactorRepository factorRepository,
+                                     ActivityTypeRepository typeRepository) {
+        this.factorRepository = factorRepository;
+        this.typeRepository = typeRepository;
     }
 
     @Override
     public EmissionFactor createFactor(Long activityTypeId, EmissionFactor factor) {
 
-        if (factor.getFactorValue() == null || factor.getFactorValue() <= 0) {
-            throw new ValidationException("Emission factor not found");
-        }
-
-        ActivityType activityType = activityTypeRepository.findById(activityTypeId)
+        ActivityType type = typeRepository.findById(activityTypeId)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Activity type not found")
-                );
+                        new ResourceNotFoundException("Category not found"));
 
-        EmissionFactor existing =
-                emissionFactorRepository.findByActivityType_Id(activityTypeId);
-
-        if (existing != null) {
-            throw new ValidationException("Emission factor not found");
+        if (factor.getFactorValue() == null || factor.getFactorValue() <= 0) {
+            throw new ValidationException("Factor value must be greater than zero");
         }
 
-        factor.setActivityType(activityType);
-        return emissionFactorRepository.save(factor);
+        factor.setActivityType(type);
+        return factorRepository.save(factor);
     }
 
     @Override
     public EmissionFactor getFactor(Long id) {
-        return emissionFactorRepository.findById(id)
+        return factorRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Emission factor not found")
-                );
+                        new ResourceNotFoundException("Emission factor not found"));
     }
 
     @Override
-    public EmissionFactor getFactorByType(Long typeId) {
-
-        EmissionFactor factor =
-                emissionFactorRepository.findByActivityType_Id(typeId);
-
-        if (factor == null) {
-            throw new ValidationException("No emission factor configured");
-        }
-
-        return factor;
+    public EmissionFactor getFactorByType(Long activityTypeId) {
+        return factorRepository.findByActivityType_Id(activityTypeId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Emission factor not found"));
     }
 
     @Override
     public List<EmissionFactor> getAllFactors() {
-        return emissionFactorRepository.findAll();
+        return factorRepository.findAll();
     }
 }

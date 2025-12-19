@@ -7,8 +7,10 @@ import com.example.demo.security.JwtUtil;
 import com.example.demo.service.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -36,13 +38,20 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequest request) {
-        Authentication authentication = authenticationManager.authenticate(
+    public Map<String, String> login(@RequestBody LoginRequest request) {
+
+        authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(), request.getPassword())
+                        request.getEmail(),
+                        request.getPassword()
+                )
         );
 
         User user = userService.getByEmail(request.getEmail());
-        return jwtUtil.generateToken(user);
+        String token = jwtUtil.generateTokenForUser(user);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("token", token);
+        return response;
     }
 }

@@ -27,7 +27,7 @@ public class ActivityCategoryController {
     }
 
     @GetMapping("/{id}")
-    public ActivityCategory getById(@PathVariable Long id) {
+    public ActivityCategory get(@PathVariable Long id) {
         return service.getCategory(id);
     }
 }

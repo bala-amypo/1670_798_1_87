@@ -19,9 +19,9 @@ public class ActivityLogController {
     }
 
     @PostMapping("/{userId}/{typeId}")
-    public ActivityLog logActivity(@PathVariable Long userId,
-                                   @PathVariable Long typeId,
-                                   @RequestBody ActivityLogRequest request) {
+    public ActivityLog log(@PathVariable Long userId,
+                           @PathVariable Long typeId,
+                           @RequestBody ActivityLogRequest request) {
 
         ActivityLog log = new ActivityLog();
         log.setQuantity(request.getQuantity());
@@ -41,10 +41,5 @@ public class ActivityLogController {
             @RequestParam LocalDate start,
             @RequestParam LocalDate end) {
         return service.getLogsByUserAndDate(userId, start, end);
-    }
-
-    @GetMapping("/{id}")
-    public ActivityLog getById(@PathVariable Long id) {
-        return service.getLog(id);
     }
 }

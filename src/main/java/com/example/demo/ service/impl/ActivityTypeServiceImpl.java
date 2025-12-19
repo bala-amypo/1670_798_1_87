@@ -3,6 +3,7 @@ package com.example.demo.service.impl;
 import com.example.demo.entity.ActivityCategory;
 import com.example.demo.entity.ActivityType;
 import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.exception.ValidationException;
 import com.example.demo.repository.ActivityCategoryRepository;
 import com.example.demo.repository.ActivityTypeRepository;
 import com.example.demo.service.ActivityTypeService;
@@ -24,8 +25,14 @@ public class ActivityTypeServiceImpl implements ActivityTypeService {
 
     @Override
     public ActivityType createType(Long categoryId, ActivityType type) {
+
         ActivityCategory category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Category not found"));
+
+        if (type.getUnit() == null || type.getUnit().isBlank()) {
+            throw new ValidationException("Unit is required");
+        }
 
         type.setCategory(category);
         return typeRepository.save(type);
@@ -34,7 +41,8 @@ public class ActivityTypeServiceImpl implements ActivityTypeService {
     @Override
     public ActivityType getType(Long id) {
         return typeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Activity type not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Category not found"));
     }
 
     @Override

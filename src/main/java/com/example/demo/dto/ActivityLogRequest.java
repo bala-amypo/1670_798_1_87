@@ -7,16 +7,11 @@ public class ActivityLogRequest {
     private Double quantity;
     private LocalDate activityDate;
 
-    public Double getQuantity() {
-        return quantity;
-    }
-    public void setQuantity(Double quantity) {
-        this.quantity = quantity;
-    }
-    public LocalDate getActivityDate() {
-        return activityDate;
-    }
-    public void setActivityDate(LocalDate activityDate) {
-        this.activityDate = activityDate;
-    }
+    public ActivityLogRequest() {}
+
+    public Double getQuantity() { return quantity; }
+    public void setQuantity(Double quantity) { this.quantity = quantity; }
+
+    public LocalDate getActivityDate() { return activityDate; }
+    public void setActivityDate(LocalDate activityDate) { this.activityDate = activityDate; }
 }

@@ -22,13 +22,13 @@ public class ActivityTypeController {
         return service.createType(categoryId, type);
     }
 
+    @GetMapping("/{id}")
+    public ActivityType get(@PathVariable Long id) {
+        return service.getType(id);
+    }
+
     @GetMapping("/category/{categoryId}")
     public List<ActivityType> getByCategory(@PathVariable Long categoryId) {
         return service.getTypesByCategory(categoryId);
-    }
-
-    @GetMapping("/{id}")
-    public ActivityType getById(@PathVariable Long id) {
-        return service.getType(id);
     }
 }
