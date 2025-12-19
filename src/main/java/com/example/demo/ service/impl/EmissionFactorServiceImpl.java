@@ -13,45 +13,50 @@ import java.util.List;
 
 @Service
 public class EmissionFactorServiceImpl implements EmissionFactorService {
-
+    
     private final EmissionFactorRepository factorRepository;
     private final ActivityTypeRepository typeRepository;
-
+    
     public EmissionFactorServiceImpl(EmissionFactorRepository factorRepository,
-                                     ActivityTypeRepository typeRepository) {
+                                    ActivityTypeRepository typeRepository) {
         this.factorRepository = factorRepository;
         this.typeRepository = typeRepository;
     }
-
+    
     @Override
     public EmissionFactor createFactor(Long activityTypeId, EmissionFactor factor) {
-
-        ActivityType type = typeRepository.findById(activityTypeId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Category not found"));
-
+        // Find activity type
+        ActivityType activityType = typeRepository.findById(activityTypeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+        
+        // Validate factor value
         if (factor.getFactorValue() == null || factor.getFactorValue() <= 0) {
             throw new ValidationException("Factor value must be greater than zero");
         }
-
-        factor.setActivityType(type);
+        
+        // Validate unit
+        if (factor.getUnit() == null || factor.getUnit().trim().isEmpty()) {
+            throw new ValidationException("Unit is required");
+        }
+        
+        // Set activity type
+        factor.setActivityType(activityType);
+        
         return factorRepository.save(factor);
     }
-
+    
     @Override
     public EmissionFactor getFactor(Long id) {
         return factorRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Emission factor not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Emission factor not found"));
     }
-
+    
     @Override
-    public EmissionFactor getFactorByType(Long activityTypeId) {
-        return factorRepository.findByActivityType_Id(activityTypeId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Emission factor not found"));
+    public EmissionFactor getFactorByType(Long typeId) {
+        return factorRepository.findByActivityType_Id(typeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Emission factor not found"));
     }
-
+    
     @Override
     public List<EmissionFactor> getAllFactors() {
         return factorRepository.findAll();
