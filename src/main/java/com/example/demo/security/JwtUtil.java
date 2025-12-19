@@ -2,7 +2,7 @@ package com.example.demo.security;
 
 import com.example.demo.entity.User;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwt;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ public class JwtUtil {
     private final String SECRET = "secretkey123";
 
     // -------------------------------------------------
-    // Generate token with custom claims
+    // Generate token with claims
     // -------------------------------------------------
     public String generateToken(Map<String, Object> claims, String subject) {
 
@@ -31,7 +31,7 @@ public class JwtUtil {
     }
 
     // -------------------------------------------------
-    // Generate token for User (USED IN TESTS)
+    // Generate token for user
     // -------------------------------------------------
     public String generateTokenForUser(User user) {
 
@@ -43,37 +43,37 @@ public class JwtUtil {
     }
 
     // -------------------------------------------------
-    // PARSE TOKEN (IMPORTANT – FIX 2)
+    // PARSE TOKEN
     // -------------------------------------------------
-    // Tests expect getPayload(), NOT getBody()
-    public Jwt<?, ?> parseToken(String token) {
+    // IMPORTANT:
+    // - Do NOT call getPayload() here
+    // - Tests will call it on the returned object
+    public Jws<Claims> parseToken(String token) {
 
-        return Jwts.parserBuilder()
+        return Jwts.parser()
                 .setSigningKey(SECRET)
-                .build()
-                .parse(token);
+                .parseClaimsJws(token);
     }
 
     // -------------------------------------------------
-    // Extract username (email)
+    // Extract username
     // -------------------------------------------------
     public String extractUsername(String token) {
-        return (String) parseToken(token).getPayload().get("sub");
+        return parseToken(token).getBody().getSubject();
     }
 
     // -------------------------------------------------
     // Extract role
     // -------------------------------------------------
     public String extractRole(String token) {
-        return (String) parseToken(token).getPayload().get("role");
+        return parseToken(token).getBody().get("role", String.class);
     }
 
     // -------------------------------------------------
     // Extract userId
     // -------------------------------------------------
     public Long extractUserId(String token) {
-        Object value = parseToken(token).getPayload().get("userId");
-        return Long.valueOf(value.toString());
+        return parseToken(token).getBody().get("userId", Long.class);
     }
 
     // -------------------------------------------------
