@@ -24,9 +24,7 @@ public class EmissionFactor {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
     
-    // Constructors
-    public EmissionFactor() {
-    }
+    public EmissionFactor() {}
     
     public EmissionFactor(Long id, ActivityType activityType, Double factorValue, String unit, LocalDateTime createdAt) {
         this.id = id;
@@ -42,43 +40,18 @@ public class EmissionFactor {
     }
     
     // Getters and Setters
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
     
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public ActivityType getActivityType() { return activityType; }
+    public void setActivityType(ActivityType activityType) { this.activityType = activityType; }
     
-    public ActivityType getActivityType() {
-        return activityType;
-    }
+    public Double getFactorValue() { return factorValue; }
+    public void setFactorValue(Double factorValue) { this.factorValue = factorValue; }
     
-    public void setActivityType(ActivityType activityType) {
-        this.activityType = activityType;
-    }
+    public String getUnit() { return unit; }
+    public void setUnit(String unit) { this.unit = unit; }
     
-    public Double getFactorValue() {
-        return factorValue;
-    }
-    
-    public void setFactorValue(Double factorValue) {
-        this.factorValue = factorValue;
-    }
-    
-    public String getUnit() {
-        return unit;
-    }
-    
-    public void setUnit(String unit) {
-        this.unit = unit;
-    }
-    
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-    
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

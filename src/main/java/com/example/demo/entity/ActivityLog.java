@@ -32,9 +32,7 @@ public class ActivityLog {
     @Column(name = "estimated_emission", nullable = false)
     private Double estimatedEmission;
     
-    // Constructors
-    public ActivityLog() {
-    }
+    public ActivityLog() {}
     
     public ActivityLog(Long id, ActivityType activityType, User user, Double quantity, 
                       LocalDate activityDate, LocalDateTime loggedAt, Double estimatedEmission) {
@@ -53,59 +51,24 @@ public class ActivityLog {
     }
     
     // Getters and Setters
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
     
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public ActivityType getActivityType() { return activityType; }
+    public void setActivityType(ActivityType activityType) { this.activityType = activityType; }
     
-    public ActivityType getActivityType() {
-        return activityType;
-    }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
     
-    public void setActivityType(ActivityType activityType) {
-        this.activityType = activityType;
-    }
+    public Double getQuantity() { return quantity; }
+    public void setQuantity(Double quantity) { this.quantity = quantity; }
     
-    public User getUser() {
-        return user;
-    }
+    public LocalDate getActivityDate() { return activityDate; }
+    public void setActivityDate(LocalDate activityDate) { this.activityDate = activityDate; }
     
-    public void setUser(User user) {
-        this.user = user;
-    }
+    public LocalDateTime getLoggedAt() { return loggedAt; }
+    public void setLoggedAt(LocalDateTime loggedAt) { this.loggedAt = loggedAt; }
     
-    public Double getQuantity() {
-        return quantity;
-    }
-    
-    public void setQuantity(Double quantity) {
-        this.quantity = quantity;
-    }
-    
-    public LocalDate getActivityDate() {
-        return activityDate;
-    }
-    
-    public void setActivityDate(LocalDate activityDate) {
-        this.activityDate = activityDate;
-    }
-    
-    public LocalDateTime getLoggedAt() {
-        return loggedAt;
-    }
-    
-    public void setLoggedAt(LocalDateTime loggedAt) {
-        this.loggedAt = loggedAt;
-    }
-    
-    public Double getEstimatedEmission() {
-        return estimatedEmission;
-    }
-    
-    public void setEstimatedEmission(Double estimatedEmission) {
-        this.estimatedEmission = estimatedEmission;
-    }
+    public Double getEstimatedEmission() { return estimatedEmission; }
+    public void setEstimatedEmission(Double estimatedEmission) { this.estimatedEmission = estimatedEmission; }
 }
