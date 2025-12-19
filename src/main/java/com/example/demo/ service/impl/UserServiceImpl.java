@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
         }
         
         // Validate password length
-        if (user.getPassword().length() < 8) {
+        if (user.getPassword() == null || user.getPassword().length() < 8) {
             throw new ValidationException("Password must be at least 8 characters");
         }
         
