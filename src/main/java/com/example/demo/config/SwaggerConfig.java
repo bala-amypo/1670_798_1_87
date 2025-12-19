@@ -18,7 +18,7 @@ public class SwaggerConfig {
     public OpenAPI customOpenAPI() {
 
         Server server = new Server();
-        server.setUrl("http://localhost:" + port);
+        server.setUrl("https://9103.408procr.amypo.ai/" + port);
         server.setDescription("Local Server");
 
         return new OpenAPI()
