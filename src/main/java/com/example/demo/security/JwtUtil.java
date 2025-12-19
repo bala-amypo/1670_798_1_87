@@ -1,85 +1,83 @@
 package com.example.demo.security;
 
-import com.example.demo.entity.User;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 @Component
 public class JwtUtil {
-
-    private final String SECRET = "secretkey123";
-
-    // -------------------------------------------------
-    // Generate token with claims
-    // -------------------------------------------------
+    
+    @Value("${jwt.secret}")
+    private String secret;
+    
+    @Value("${jwt.expiration}")
+    private Long expiration;
+    
+    private Key key;
+    
+    @PostConstruct
+    public void init() {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes());
+    }
+    
     public String generateToken(Map<String, Object> claims, String subject) {
-
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
-                .signWith(SignatureAlgorithm.HS256, SECRET)
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
-
-    // -------------------------------------------------
-    // Generate token for user
-    // -------------------------------------------------
-    public String generateTokenForUser(User user) {
-
+    
+    public String generateTokenForUser(com.example.demo.entity.User user) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", user.getId());
+        claims.put("email", user.getEmail());
         claims.put("role", user.getRole());
-
+        
         return generateToken(claims, user.getEmail());
     }
-
-    // -------------------------------------------------
-    // PARSE TOKEN
-    // -------------------------------------------------
-    // IMPORTANT:
-    // - Do NOT call getPayload() here
-    // - Tests will call it on the returned object
+    
+    public String extractUsername(String token) {
+        return extractAllClaims(token).getSubject();
+    }
+    
+    public String extractRole(String token) {
+        return extractAllClaims(token).get("role", String.class);
+    }
+    
+    public Long extractUserId(String token) {
+        return extractAllClaims(token).get("userId", Long.class);
+    }
+    
+    public boolean isTokenValid(String token, String username) {
+        try {
+            return extractUsername(token).equals(username) && !isTokenExpired(token);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
     public Jws<Claims> parseToken(String token) {
-
-        return Jwts.parser()
-                .setSigningKey(SECRET)
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
                 .parseClaimsJws(token);
     }
-
-    // -------------------------------------------------
-    // Extract username
-    // -------------------------------------------------
-    public String extractUsername(String token) {
-        return parseToken(token).getBody().getSubject();
+    
+    private Claims extractAllClaims(String token) {
+        return parseToken(token).getBody();
     }
-
-    // -------------------------------------------------
-    // Extract role
-    // -------------------------------------------------
-    public String extractRole(String token) {
-        return parseToken(token).getBody().get("role", String.class);
-    }
-
-    // -------------------------------------------------
-    // Extract userId
-    // -------------------------------------------------
-    public Long extractUserId(String token) {
-        return parseToken(token).getBody().get("userId", Long.class);
-    }
-
-    // -------------------------------------------------
-    // Validate token
-    // -------------------------------------------------
-    public boolean isTokenValid(String token, String username) {
-        return extractUsername(token).equals(username);
+    
+    private boolean isTokenExpired(String token) {
+        return extractAllClaims(token).getExpiration().before(new Date());
     }
 }
