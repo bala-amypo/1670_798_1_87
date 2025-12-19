@@ -1,57 +1,62 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.JwtResponse;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.RegisterRequest;
 import com.example.demo.entity.User;
 import com.example.demo.security.JwtUtil;
 import com.example.demo.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "Authentication", description = "Authentication endpoints")
 public class AuthController {
-
-    private final UserService userService;
+    
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
-
-    public AuthController(UserService userService,
-                          AuthenticationManager authenticationManager,
-                          JwtUtil jwtUtil) {
-        this.userService = userService;
+    private final UserService userService;
+    
+    public AuthController(AuthenticationManager authenticationManager,
+                         JwtUtil jwtUtil,
+                         UserService userService) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
+        this.userService = userService;
     }
-
+    
     @PostMapping("/register")
-    public User register(@RequestBody RegisterRequest request) {
+    @Operation(summary = "Register a new user")
+    public User register(@RequestBody RegisterRequest registerRequest) {
         User user = new User();
-        user.setFullName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
+        user.setFullName(registerRequest.getName());
+        user.setEmail(registerRequest.getEmail());
+        user.setPassword(registerRequest.getPassword());
+        
         return userService.registerUser(user);
     }
-
+    
     @PostMapping("/login")
-    public Map<String, String> login(@RequestBody LoginRequest request) {
-
-        authenticationManager.authenticate(
+    @Operation(summary = "Login and get JWT token")
+    public JwtResponse login(@RequestBody LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
+                        loginRequest.getEmail(),
+                        loginRequest.getPassword()
                 )
         );
-
-        User user = userService.getByEmail(request.getEmail());
+        
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        
+        User user = userService.getByEmail(loginRequest.getEmail());
         String token = jwtUtil.generateTokenForUser(user);
-
-        Map<String, String> response = new HashMap<>();
-        response.put("token", token);
-        return response;
+        
+        return new JwtResponse(token, user.getEmail(), user.getRole(), user.getId());
     }
 }
