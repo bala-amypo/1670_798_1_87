@@ -14,17 +14,16 @@ public class ActivityCategoryServiceImpl implements ActivityCategoryService {
     
     private final ActivityCategoryRepository categoryRepository;
     
+    // Constructor with EXACT parameter order: (ActivityCategoryRepository)
     public ActivityCategoryServiceImpl(ActivityCategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
     }
     
     @Override
     public ActivityCategory createCategory(ActivityCategory category) {
-        // Check for duplicate category name
         if (categoryRepository.existsByCategoryName(category.getCategoryName())) {
             throw new ValidationException("Category name must be unique");
         }
-        
         return categoryRepository.save(category);
     }
     

@@ -17,6 +17,7 @@ public class ActivityTypeServiceImpl implements ActivityTypeService {
     private final ActivityTypeRepository typeRepository;
     private final ActivityCategoryRepository categoryRepository;
     
+    // Constructor with EXACT parameter order: (ActivityTypeRepository, ActivityCategoryRepository)
     public ActivityTypeServiceImpl(ActivityTypeRepository typeRepository, 
                                    ActivityCategoryRepository categoryRepository) {
         this.typeRepository = typeRepository;
@@ -25,21 +26,18 @@ public class ActivityTypeServiceImpl implements ActivityTypeService {
     
     @Override
     public ActivityType createType(Long categoryId, ActivityType type) {
-        // Find category
         ActivityCategory category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
         
-        // Validate required fields
         if (type.getTypeName() == null || type.getTypeName().trim().isEmpty()) {
             throw new ValidationException("Type name is required");
         }
+        
         if (type.getUnit() == null || type.getUnit().trim().isEmpty()) {
             throw new ValidationException("Unit is required");
         }
         
-        // Set category
         type.setCategory(category);
-        
         return typeRepository.save(type);
     }
     

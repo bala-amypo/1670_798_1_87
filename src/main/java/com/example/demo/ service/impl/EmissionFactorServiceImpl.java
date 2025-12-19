@@ -17,6 +17,7 @@ public class EmissionFactorServiceImpl implements EmissionFactorService {
     private final EmissionFactorRepository factorRepository;
     private final ActivityTypeRepository typeRepository;
     
+    // Constructor with EXACT parameter order: (EmissionFactorRepository, ActivityTypeRepository)
     public EmissionFactorServiceImpl(EmissionFactorRepository factorRepository,
                                     ActivityTypeRepository typeRepository) {
         this.factorRepository = factorRepository;
@@ -25,23 +26,18 @@ public class EmissionFactorServiceImpl implements EmissionFactorService {
     
     @Override
     public EmissionFactor createFactor(Long activityTypeId, EmissionFactor factor) {
-        // Find activity type
         ActivityType activityType = typeRepository.findById(activityTypeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
         
-        // Validate factor value
         if (factor.getFactorValue() == null || factor.getFactorValue() <= 0) {
             throw new ValidationException("Factor value must be greater than zero");
         }
         
-        // Validate unit
         if (factor.getUnit() == null || factor.getUnit().trim().isEmpty()) {
             throw new ValidationException("Unit is required");
         }
         
-        // Set activity type
         factor.setActivityType(activityType);
-        
         return factorRepository.save(factor);
     }
     
@@ -61,4 +57,4 @@ public class EmissionFactorServiceImpl implements EmissionFactorService {
     public List<EmissionFactor> getAllFactors() {
         return factorRepository.findAll();
     }
-}
+}   
