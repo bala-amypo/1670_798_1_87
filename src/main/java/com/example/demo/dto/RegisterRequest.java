@@ -8,6 +8,13 @@ public class RegisterRequest {
 
     public RegisterRequest() {}
 
+    // ✅ REQUIRED BY TESTS
+    public RegisterRequest(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
+
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 

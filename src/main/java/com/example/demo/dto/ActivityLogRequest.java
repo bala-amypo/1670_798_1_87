@@ -9,6 +9,12 @@ public class ActivityLogRequest {
 
     public ActivityLogRequest() {}
 
+    // ✅ REQUIRED BY TESTS
+    public ActivityLogRequest(Double quantity, LocalDate activityDate) {
+        this.quantity = quantity;
+        this.activityDate = activityDate;
+    }
+
     public Double getQuantity() { return quantity; }
     public void setQuantity(Double quantity) { this.quantity = quantity; }
 
