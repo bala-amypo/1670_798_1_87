@@ -22,7 +22,6 @@
 
     <properties>
         <java.version>11</java.version>
-        <mysql.version>8.0.33</mysql.version>
     </properties>
 
     <dependencies>
@@ -46,7 +45,6 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql.version}</version>
         </dependency>
 
         <dependency>
@@ -82,4 +80,4 @@
             </plugin>
         </plugins>
     </build>
-</project>
+</project>  
