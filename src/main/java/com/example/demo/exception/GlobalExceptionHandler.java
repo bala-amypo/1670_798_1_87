@@ -2,7 +2,6 @@ package com.example.demo.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -26,10 +25,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<Map<String, String>> handleAuthentication(AuthenticationException ex) {
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, String>> handleGeneric(Exception ex) {
         Map<String, String> error = new HashMap<>();
-        error.put("error", "Invalid email or password");
-        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+        error.put("error", "Internal server error");
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
