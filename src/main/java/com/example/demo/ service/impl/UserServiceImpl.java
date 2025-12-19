@@ -16,24 +16,24 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // ✅ REQUIRED CONSTRUCTOR ORDER
+    // CONSTRUCTOR ORDER MUST MATCH TESTS
     public UserServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder) {
-
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public User registerUser(User user) {
-
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new ValidationException("Email already in use");
         }
 
-        user.setPassword(
-                passwordEncoder.encode(user.getPassword())
-        );
+        if (user.getPassword() == null || user.getPassword().length() < 8) {
+            throw new ValidationException("Password must be at least 8 characters");
+        }
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         if (user.getRole() == null) {
             user.setRole("USER");
@@ -46,8 +46,7 @@ public class UserServiceImpl implements UserService {
     public User getUser(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found")
-                );
+                        new ResourceNotFoundException("User not found"));
     }
 
     @Override
@@ -57,6 +56,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getByEmail(String email) {
-        return userRepository.findByEmail(email);
+        return userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
     }
 }
