@@ -13,40 +13,37 @@ import java.util.List;
 
 @Service
 public class ActivityTypeServiceImpl implements ActivityTypeService {
-    
+
     private final ActivityTypeRepository typeRepository;
     private final ActivityCategoryRepository categoryRepository;
-    
-    // Constructor with EXACT parameter order: (ActivityTypeRepository, ActivityCategoryRepository)
-    public ActivityTypeServiceImpl(ActivityTypeRepository typeRepository, 
+
+    // MUST MATCH ORDER: (ActivityTypeRepository, ActivityCategoryRepository)
+    public ActivityTypeServiceImpl(ActivityTypeRepository typeRepository,
                                    ActivityCategoryRepository categoryRepository) {
         this.typeRepository = typeRepository;
         this.categoryRepository = categoryRepository;
     }
-    
+
     @Override
     public ActivityType createType(Long categoryId, ActivityType type) {
+
         ActivityCategory category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
-        
-        if (type.getTypeName() == null || type.getTypeName().trim().isEmpty()) {
-            throw new ValidationException("Type name is required");
+
+        if (type.getUnit() == null || type.getUnit().isBlank()) {
+            throw new ValidationException("Unit must be provided");
         }
-        
-        if (type.getUnit() == null || type.getUnit().trim().isEmpty()) {
-            throw new ValidationException("Unit is required");
-        }
-        
+
         type.setCategory(category);
         return typeRepository.save(type);
     }
-    
+
     @Override
     public ActivityType getType(Long id) {
         return typeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Activity type not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
     }
-    
+
     @Override
     public List<ActivityType> getTypesByCategory(Long categoryId) {
         return typeRepository.findByCategory_Id(categoryId);
