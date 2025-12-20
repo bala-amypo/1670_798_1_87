@@ -1,6 +1,6 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -16,27 +16,16 @@ public class EmissionFactor {
     private ActivityType activityType;
 
     private Double factorValue;
-
     private String unit;
-
     private LocalDateTime createdAt;
 
     public EmissionFactor() {}
 
-    public EmissionFactor(Long id, ActivityType activityType, Double factorValue, String unit, LocalDateTime createdAt) {
-        this.id = id;
-        this.activityType = activityType;
-        this.factorValue = factorValue;
-        this.unit = unit;
-        this.createdAt = createdAt;
-    }
-
     @PrePersist
-    public void onCreate() {
+    public void prePersist() {
         this.createdAt = LocalDateTime.now();
     }
 
-    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

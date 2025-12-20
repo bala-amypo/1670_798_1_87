@@ -1,12 +1,13 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "activity_categories", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "categoryName")
-})
+@Table(
+    name = "activity_categories",
+    uniqueConstraints = @UniqueConstraint(columnNames = "categoryName")
+)
 public class ActivityCategory {
 
     @Id
@@ -14,26 +15,16 @@ public class ActivityCategory {
     private Long id;
 
     private String categoryName;
-
     private String description;
-
     private LocalDateTime createdAt;
 
     public ActivityCategory() {}
 
-    public ActivityCategory(Long id, String categoryName, String description, LocalDateTime createdAt) {
-        this.id = id;
-        this.categoryName = categoryName;
-        this.description = description;
-        this.createdAt = createdAt;
-    }
-
     @PrePersist
-    public void onCreate() {
+    public void prePersist() {
         this.createdAt = LocalDateTime.now();
     }
 
-    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
