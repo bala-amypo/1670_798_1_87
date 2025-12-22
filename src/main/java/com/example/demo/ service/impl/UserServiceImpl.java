@@ -5,7 +5,6 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.exception.ValidationException;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +16,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // ✅ CONSTRUCTOR INJECTION (ORDER MATTERS)
+    // MUST MATCH ORDER: (UserRepository, PasswordEncoder)
     public UserServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -31,16 +30,17 @@ public class UserServiceImpl implements UserService {
             throw new ValidationException("Email already in use");
         }
 
-        // 🔥 THIS LINE FIXES LOGIN 401
+        if (user.getPassword() == null || user.getPassword().length() < 8) {
+            throw new ValidationException("Password must be at least 8 characters");
+        }
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        return userRepository.save(user);
-    }
+        if (user.getRole() == null) {
+            user.setRole("USER");
+        }
 
-    @Override
-    public User getByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return userRepository.save(user);
     }
 
     @Override
@@ -52,5 +52,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public User getByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 }
