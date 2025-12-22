@@ -24,6 +24,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.userDetailsService = userDetailsService;
     }
 
+    // 🔴 THIS IS THE KEY FIX
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+
+        return path.startsWith("/auth/")
+                || path.startsWith("/swagger-ui/")
+                || path.startsWith("/v3/api-docs");
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -33,6 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
+
             String token = authHeader.substring(7);
             String username = jwtUtil.extractUsername(token);
 
@@ -43,14 +54,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         userDetailsService.loadUserByUsername(username);
 
                 if (jwtUtil.isTokenValid(token, userDetails.getUsername())) {
+
                     UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(
-                                    userDetails, null, userDetails.getAuthorities());
+                                    userDetails,
+                                    null,
+                                    userDetails.getAuthorities()
+                            );
 
                     authentication.setDetails(
-                            new WebAuthenticationDetailsSource().buildDetails(request));
+                            new WebAuthenticationDetailsSource().buildDetails(request)
+                    );
 
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                    SecurityContextHolder.getContext()
+                            .setAuthentication(authentication);
                 }
             }
         }
