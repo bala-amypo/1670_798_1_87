@@ -5,8 +5,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(
-    name = "activity_categories",
-    uniqueConstraints = @UniqueConstraint(columnNames = "categoryName")
+        name = "activity_categories",
+        uniqueConstraints = @UniqueConstraint(columnNames = "categoryName")
 )
 public class ActivityCategory {
 
@@ -15,25 +15,44 @@ public class ActivityCategory {
     private Long id;
 
     private String categoryName;
+
     private String description;
+
     private LocalDateTime createdAt;
 
-    public ActivityCategory() {}
+    public ActivityCategory() {
+    }
 
     @PrePersist
-    public void prePersist() {
+    public void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getCategoryName() { return categoryName; }
-    public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getCategoryName() {
+        return categoryName;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 }
