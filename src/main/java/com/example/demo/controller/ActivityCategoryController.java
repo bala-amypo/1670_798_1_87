@@ -2,7 +2,10 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.ActivityCategory;
 import com.example.demo.service.ActivityCategoryService;
+
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/categories")
 @Tag(name = "Activity Categories")
+@SecurityRequirement(name = "bearerAuth")   // 🔥 THIS IS THE FIX
 public class ActivityCategoryController {
 
     private final ActivityCategoryService categoryService;
