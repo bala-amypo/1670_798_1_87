@@ -12,30 +12,31 @@ import java.util.List;
 @Service
 public class ActivityCategoryServiceImpl implements ActivityCategoryService {
 
-    private final ActivityCategoryRepository repository;
+    private final ActivityCategoryRepository categoryRepository;
 
-    public ActivityCategoryServiceImpl(ActivityCategoryRepository repository) {
-        this.repository = repository;
+    // MUST MATCH ORDER: (ActivityCategoryRepository)
+    public ActivityCategoryServiceImpl(ActivityCategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
     }
 
     @Override
     public ActivityCategory createCategory(ActivityCategory category) {
 
-        if (repository.existsByCategoryName(category.getCategoryName())) {
+        if (categoryRepository.existsByCategoryName(category.getCategoryName())) {
             throw new ValidationException("Category name must be unique");
         }
 
-        return repository.save(category);
+        return categoryRepository.save(category);
     }
 
     @Override
     public ActivityCategory getCategory(Long id) {
-        return repository.findById(id)
+        return categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
     }
 
     @Override
     public List<ActivityCategory> getAllCategories() {
-        return repository.findAll();
+        return categoryRepository.findAll();
     }
 }
