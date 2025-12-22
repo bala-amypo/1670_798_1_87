@@ -7,6 +7,7 @@ import com.example.demo.security.JwtUtil;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -52,7 +53,7 @@ public class SecurityConfig {
         return configuration.getAuthenticationManager();
     }
 
-    // ---------- SECURITY FILTER CHAIN (FINAL FIX) ----------
+    // ---------- SECURITY FILTER CHAIN ----------
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
                                            JwtAuthenticationFilter jwtFilter,
@@ -60,20 +61,15 @@ public class SecurityConfig {
             throws Exception {
 
         http
-            // 🔥 THIS LINE FIXES SWAGGER FAILED-TO-FETCH
             .cors()
             .and()
-
             .csrf().disable()
-
             .exceptionHandling()
                 .authenticationEntryPoint(entryPoint)
             .and()
-
             .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
-
             .authorizeRequests()
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
@@ -88,13 +84,22 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // ---------- CORS CONFIG (REQUIRED FOR HTTPS + NGINX + SWAGGER) ----------
+    // ---------- CORS CONFIG ----------
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration configuration = new CorsConfiguration();
-
         configuration.setAllowedOriginPatterns(Arrays.asList("*"));
         configuration.setAllowedMethods(
                 Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")
         );
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
+    }
+}
