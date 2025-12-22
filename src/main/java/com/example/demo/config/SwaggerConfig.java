@@ -15,7 +15,7 @@ public class SwaggerConfig {
     public OpenAPI openAPI() {
 
         return new OpenAPI()
-                .addServersItem(new Server().url("https://9103.408procr.amypo.ai/"))
+                .addServersItem(new Server().url("https://9194.408procr.amypo.ai/"))
                 .addSecurityItem(
                         new SecurityRequirement().addList("bearerAuth")
                 )
