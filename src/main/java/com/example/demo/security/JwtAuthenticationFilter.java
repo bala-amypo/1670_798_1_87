@@ -24,14 +24,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.userDetailsService = userDetailsService;
     }
 
-    // 🔴 THIS IS THE KEY FIX
+    /**
+     * IMPORTANT:
+     * AMYPO runs behind a proxy.
+     * Request path may be /demo/auth/login or /preview/demo/auth/login
+     * So we must use contains(), NOT startsWith().
+     */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        String path = request.getServletPath();
+        String uri = request.getRequestURI();
 
-        return path.startsWith("/auth/")
-                || path.startsWith("/swagger-ui/")
-                || path.startsWith("/v3/api-docs");
+        return uri.contains("/auth/")
+                || uri.contains("/swagger-ui")
+                || uri.contains("/v3/api-docs");
     }
 
     @Override
@@ -63,7 +68,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             );
 
                     authentication.setDetails(
-                            new WebAuthenticationDetailsSource().buildDetails(request)
+                            new WebAuthenticationDetailsSource()
+                                    .buildDetails(request)
                     );
 
                     SecurityContextHolder.getContext()
