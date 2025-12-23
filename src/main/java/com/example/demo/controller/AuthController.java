@@ -36,4 +36,22 @@ public class AuthController {
         User user = new User();
         user.setFullName(request.getName());
         user.setEmail(request.getEmail());
-        user.setPassword(request.getPasswo
+        user.setPassword(request.getPassword());
+        return userService.registerUser(user);
+    }
+
+    @PostMapping("/login")
+    public JwtResponse login(@RequestBody LoginRequest request) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
+
+        User user = userService.getByEmail(request.getEmail());
+        String token = jwtUtil.generateTokenForUser(user);
+
+        return new JwtResponse(token);
+    }
+}

@@ -2,10 +2,12 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.EmissionFactor;
 import com.example.demo.service.EmissionFactorService;
-import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/factors")
@@ -25,7 +27,7 @@ public class EmissionFactorController {
     }
 
     @GetMapping("/{id}")
-    public EmissionFactor get(@PathVariable Long id) {
+    public EmissionFactor getById(@PathVariable Long id) {
         return factorService.getFactor(id);
     }
 
