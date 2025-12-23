@@ -2,10 +2,12 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.ActivityType;
 import com.example.demo.service.ActivityTypeService;
-import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/types")
@@ -19,8 +21,8 @@ public class ActivityTypeController {
     }
 
     @PostMapping("/category/{categoryId}")
-    public ActivityType create(@PathVariable Long categoryId,
-                               @RequestBody ActivityType type) {
+    public ActivityType createType(@PathVariable Long categoryId,
+                                   @RequestBody ActivityType type) {
         return typeService.createType(categoryId, type);
     }
 
@@ -30,7 +32,7 @@ public class ActivityTypeController {
     }
 
     @GetMapping("/{id}")
-    public ActivityType getType(@PathVariable Long id) {
+    public ActivityType getById(@PathVariable Long id) {
         return typeService.getType(id);
     }
 }

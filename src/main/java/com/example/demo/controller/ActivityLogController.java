@@ -3,11 +3,13 @@ package com.example.demo.controller;
 import com.example.demo.dto.ActivityLogRequest;
 import com.example.demo.entity.ActivityLog;
 import com.example.demo.service.ActivityLogService;
-import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/logs")
@@ -21,9 +23,9 @@ public class ActivityLogController {
     }
 
     @PostMapping("/{userId}/{typeId}")
-    public ActivityLog logActivity(@PathVariable Long userId,
-                                   @PathVariable Long typeId,
-                                   @RequestBody ActivityLogRequest request) {
+    public ActivityLog log(@PathVariable Long userId,
+                           @PathVariable Long typeId,
+                           @RequestBody ActivityLogRequest request) {
 
         ActivityLog log = new ActivityLog();
         log.setQuantity(request.getQuantity());
@@ -38,16 +40,14 @@ public class ActivityLogController {
     }
 
     @GetMapping("/user/{userId}/range")
-    public List<ActivityLog> getByDateRange(
-            @PathVariable Long userId,
-            @RequestParam LocalDate start,
-            @RequestParam LocalDate end) {
-
+    public List<ActivityLog> getByDateRange(@PathVariable Long userId,
+                                            @RequestParam LocalDate start,
+                                            @RequestParam LocalDate end) {
         return logService.getLogsByUserAndDate(userId, start, end);
     }
 
     @GetMapping("/{id}")
-    public ActivityLog getLog(@PathVariable Long id) {
+    public ActivityLog getById(@PathVariable Long id) {
         return logService.getLog(id);
     }
 }

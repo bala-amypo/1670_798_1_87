@@ -2,10 +2,12 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.ActivityCategory;
 import com.example.demo.service.ActivityCategoryService;
-import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/categories")
@@ -29,7 +31,7 @@ public class ActivityCategoryController {
     }
 
     @GetMapping("/{id}")
-    public ActivityCategory get(@PathVariable Long id) {
+    public ActivityCategory getById(@PathVariable Long id) {
         return categoryService.getCategory(id);
     }
 }
