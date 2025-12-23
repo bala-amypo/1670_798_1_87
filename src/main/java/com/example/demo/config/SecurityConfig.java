@@ -21,7 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfig {
 
-    // ✅ Explicit bean creation (FIXES your error)
+    // 🔐 Explicit JWT filter bean (stable for Spring Boot 2.7)
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter(
             JwtUtil jwtUtil,
@@ -48,13 +48,19 @@ public class SecurityConfig {
 
         http.csrf().disable()
             .authorizeRequests()
+
+            // ✅ PUBLIC ENDPOINTS
             .antMatchers(
                     "/auth/**",
+                    "/api/users/register",
                     "/swagger-ui/**",
                     "/swagger-ui.html",
                     "/v3/api-docs/**"
             ).permitAll()
+
+            // 🔒 PROTECTED ENDPOINTS
             .antMatchers("/api/**").authenticated()
+
             .anyRequest().permitAll()
             .and()
             .sessionManagement()
