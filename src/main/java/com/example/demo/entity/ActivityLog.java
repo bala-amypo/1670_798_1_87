@@ -1,11 +1,10 @@
 package com.example.demo.entity;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "activity_logs")
 public class ActivityLog {
 
     @Id
@@ -20,16 +19,15 @@ public class ActivityLog {
 
     private Double quantity;
     private LocalDate activityDate;
-    private LocalDateTime loggedAt;
     private Double estimatedEmission;
-
-    public ActivityLog() {}
+    private LocalDateTime loggedAt;
 
     @PrePersist
-    public void prePersist() {
-        this.loggedAt = LocalDateTime.now();
+    public void onCreate() {
+        loggedAt = LocalDateTime.now();
     }
 
+    // Getters & Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -45,9 +43,8 @@ public class ActivityLog {
     public LocalDate getActivityDate() { return activityDate; }
     public void setActivityDate(LocalDate activityDate) { this.activityDate = activityDate; }
 
-    public LocalDateTime getLoggedAt() { return loggedAt; }
-    public void setLoggedAt(LocalDateTime loggedAt) { this.loggedAt = loggedAt; }
-
     public Double getEstimatedEmission() { return estimatedEmission; }
     public void setEstimatedEmission(Double estimatedEmission) { this.estimatedEmission = estimatedEmission; }
+
+    public LocalDateTime getLoggedAt() { return loggedAt; }
 }

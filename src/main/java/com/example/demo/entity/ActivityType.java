@@ -1,35 +1,31 @@
 package com.example.demo.entity;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(
-    name = "activity_types",
-    uniqueConstraints = @UniqueConstraint(columnNames = "typeName")
-)
 public class ActivityType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String typeName;
+
     private String unit;
 
     @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
     private ActivityCategory category;
 
     private LocalDateTime createdAt;
 
-    public ActivityType() {}
-
     @PrePersist
-    public void prePersist() {
-        this.createdAt = LocalDateTime.now();
+    public void onCreate() {
+        createdAt = LocalDateTime.now();
     }
 
+    // Getters & Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -43,5 +39,4 @@ public class ActivityType {
     public void setCategory(ActivityCategory category) { this.category = category; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

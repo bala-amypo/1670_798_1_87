@@ -1,31 +1,28 @@
 package com.example.demo.entity;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "emission_factors")
 public class EmissionFactor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "activity_type_id", nullable = false)
+    @OneToOne
     private ActivityType activityType;
 
     private Double factorValue;
     private String unit;
     private LocalDateTime createdAt;
 
-    public EmissionFactor() {}
-
     @PrePersist
-    public void prePersist() {
-        this.createdAt = LocalDateTime.now();
+    public void onCreate() {
+        createdAt = LocalDateTime.now();
     }
 
+    // Getters & Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -39,5 +36,4 @@ public class EmissionFactor {
     public void setUnit(String unit) { this.unit = unit; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }
