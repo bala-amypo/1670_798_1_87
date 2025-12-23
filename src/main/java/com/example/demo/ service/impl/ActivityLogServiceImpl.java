@@ -1,15 +1,9 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.ActivityLog;
-import com.example.demo.entity.ActivityType;
-import com.example.demo.entity.EmissionFactor;
-import com.example.demo.entity.User;
+import com.example.demo.entity.*;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.exception.ValidationException;
-import com.example.demo.repository.ActivityLogRepository;
-import com.example.demo.repository.ActivityTypeRepository;
-import com.example.demo.repository.EmissionFactorRepository;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.*;
 import com.example.demo.service.ActivityLogService;
 
 import org.springframework.stereotype.Service;
@@ -17,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 
-@Service   // ✅ THIS IS THE FIX
+@Service
 public class ActivityLogServiceImpl implements ActivityLogService {
 
     private final ActivityLogRepository logRepository;
@@ -25,7 +19,6 @@ public class ActivityLogServiceImpl implements ActivityLogService {
     private final ActivityTypeRepository typeRepository;
     private final EmissionFactorRepository factorRepository;
 
-    // ❗ Constructor order MUST NOT change
     public ActivityLogServiceImpl(
             ActivityLogRepository logRepository,
             UserRepository userRepository,
@@ -42,12 +35,10 @@ public class ActivityLogServiceImpl implements ActivityLogService {
     public ActivityLog logActivity(Long userId, Long typeId, ActivityLog log) {
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         ActivityType type = typeRepository.findById(typeId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Category not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
 
         if (log.getActivityDate().isAfter(LocalDate.now())) {
             throw new ValidationException("cannot be in the future");
@@ -80,8 +71,7 @@ public class ActivityLogServiceImpl implements ActivityLogService {
     public List<ActivityLog> getLogsByUserAndDate(
             Long userId, LocalDate start, LocalDate end) {
 
-        return logRepository.findByUser_IdAndActivityDateBetween(
-                userId, start, end);
+        return logRepository.findByUser_IdAndActivityDateBetween(userId, start, end);
     }
 
     @Override

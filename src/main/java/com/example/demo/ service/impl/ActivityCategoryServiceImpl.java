@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service   // ✅ THIS WAS MISSING
+@Service
 public class ActivityCategoryServiceImpl implements ActivityCategoryService {
 
     private final ActivityCategoryRepository categoryRepository;
@@ -32,7 +32,8 @@ public class ActivityCategoryServiceImpl implements ActivityCategoryService {
     @Override
     public ActivityCategory getCategory(Long id) {
         return categoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Category not found"));
     }
 
     @Override
