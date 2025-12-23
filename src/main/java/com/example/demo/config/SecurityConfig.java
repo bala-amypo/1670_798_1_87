@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,12 +20,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfig {
 
-    // 🔐 Explicit JWT filter bean (stable for Spring Boot 2.7)
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter(
             JwtUtil jwtUtil,
             CustomUserDetailsService userDetailsService) {
-
         return new JwtAuthenticationFilter(jwtUtil, userDetailsService);
     }
 
@@ -46,26 +43,15 @@ public class SecurityConfig {
             HttpSecurity http,
             JwtAuthenticationFilter jwtFilter) throws Exception {
 
-        http.csrf().disable()
+        http
+            .csrf().disable()
+
+            // 🔓 ALLOW EVERYTHING (FOR NOW)
             .authorizeRequests()
+            .antMatchers("/**").permitAll()
+            .anyRequest().permitAll();
 
-            // ✅ PUBLIC ENDPOINTS
-            .antMatchers(
-                    "/auth/**",
-                    "/api/users/register",
-                    "/swagger-ui/**",
-                    "/swagger-ui.html",
-                    "/v3/api-docs/**"
-            ).permitAll()
-
-            // 🔒 PROTECTED ENDPOINTS
-            .antMatchers("/api/**").authenticated()
-
-            .anyRequest().permitAll()
-            .and()
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
+        // 🔹 JWT filter still present (does not block)
         http.addFilterBefore(
                 jwtFilter,
                 UsernamePasswordAuthenticationFilter.class
