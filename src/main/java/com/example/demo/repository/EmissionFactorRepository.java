@@ -9,3 +9,4 @@ public interface EmissionFactorRepository extends JpaRepository<EmissionFactor, 
 
     Optional<EmissionFactor> findByActivityType_Id(Long typeId);
 }
+    
