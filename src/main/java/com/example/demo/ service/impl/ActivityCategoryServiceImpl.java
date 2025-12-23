@@ -6,8 +6,11 @@ import com.example.demo.exception.ValidationException;
 import com.example.demo.repository.ActivityCategoryRepository;
 import com.example.demo.service.ActivityCategoryService;
 
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 
+@Service   // ✅ THIS WAS MISSING
 public class ActivityCategoryServiceImpl implements ActivityCategoryService {
 
     private final ActivityCategoryRepository categoryRepository;
