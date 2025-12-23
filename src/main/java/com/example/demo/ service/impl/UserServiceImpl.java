@@ -17,6 +17,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    // ❗ Constructor order must NOT change
     public UserServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -26,15 +27,25 @@ public class UserServiceImpl implements UserService {
     @Override
     public User registerUser(User user) {
 
+        // 🔹 NULL / EMPTY EMAIL CHECK (prevents 500 error)
+        if (user.getEmail() == null || user.getEmail().isBlank()) {
+            throw new ValidationException("Email already in use");
+        }
+
+        // 🔹 DUPLICATE EMAIL CHECK
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new ValidationException("Email already in use");
         }
 
+        // 🔹 PASSWORD VALIDATION
         if (user.getPassword() == null || user.getPassword().length() < 8) {
             throw new ValidationException("Password must be at least 8 characters");
         }
 
+        // 🔹 ENCODE PASSWORD
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        // 🔹 DEFAULT ROLE
         if (user.getRole() == null) {
             user.setRole("USER");
         }
