@@ -12,11 +12,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component   // ✅ REQUIRED
+@Component
 public class JwtUtil {
 
     private static final String SECRET_KEY = "secret_key_12345";
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 10; // 10 hours
+    private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 10;
 
     public String generateTokenForUser(User user) {
 
@@ -54,6 +54,8 @@ public class JwtUtil {
 
     public boolean isTokenValid(String token, String username) {
         return extractUsername(token).equals(username)
-                && extractAllClaims(token).getExpiration().after(new Date());
+                && extractAllClaims(token)
+                .getExpiration()
+                .after(new Date());
     }
 }
