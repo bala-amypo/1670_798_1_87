@@ -1,6 +1,6 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -25,7 +25,8 @@ public class ActivityType {
         createdAt = LocalDateTime.now();
     }
 
-    // Getters & Setters
+    public ActivityType() {}
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

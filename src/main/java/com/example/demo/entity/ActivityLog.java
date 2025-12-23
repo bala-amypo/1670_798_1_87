@@ -1,6 +1,6 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -27,7 +27,9 @@ public class ActivityLog {
         loggedAt = LocalDateTime.now();
     }
 
-    // Getters & Setters
+    public ActivityLog() {}
+
+    // getters & setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

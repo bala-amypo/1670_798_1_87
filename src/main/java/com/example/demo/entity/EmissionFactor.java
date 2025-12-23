@@ -1,6 +1,6 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -22,7 +22,8 @@ public class EmissionFactor {
         createdAt = LocalDateTime.now();
     }
 
-    // Getters & Setters
+    public EmissionFactor() {}
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
