@@ -1,9 +1,10 @@
 package com.example.demo.entity;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "activity_categories")
 public class ActivityCategory {
 
     @Id
@@ -14,15 +15,24 @@ public class ActivityCategory {
     private String categoryName;
 
     private String description;
-    private LocalDateTime createdAt;
 
-    @PrePersist
-    public void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
+    private LocalDateTime createdAt;
 
     public ActivityCategory() {}
 
+    public ActivityCategory(Long id, String categoryName, String description, LocalDateTime createdAt) {
+        this.id = id;
+        this.categoryName = categoryName;
+        this.description = description;
+        this.createdAt = createdAt;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    // Getters & Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

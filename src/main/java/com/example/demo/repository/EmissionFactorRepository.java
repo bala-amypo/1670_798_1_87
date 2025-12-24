@@ -7,6 +7,5 @@ import java.util.Optional;
 
 public interface EmissionFactorRepository extends JpaRepository<EmissionFactor, Long> {
 
-    Optional<EmissionFactor> findByActivityType_Id(Long typeId);
+    Optional<EmissionFactor> findByActivityType_Id(Long activityTypeId);
 }
-    

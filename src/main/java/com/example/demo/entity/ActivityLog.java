@@ -1,10 +1,11 @@
 package com.example.demo.entity;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "activity_logs")
 public class ActivityLog {
 
     @Id
@@ -18,18 +19,33 @@ public class ActivityLog {
     private User user;
 
     private Double quantity;
+
     private LocalDate activityDate;
-    private Double estimatedEmission;
+
     private LocalDateTime loggedAt;
 
-    @PrePersist
-    public void onCreate() {
-        loggedAt = LocalDateTime.now();
-    }
+    private Double estimatedEmission;
 
     public ActivityLog() {}
 
-    // getters & setters
+    public ActivityLog(Long id, ActivityType activityType, User user,
+                       Double quantity, LocalDate activityDate,
+                       LocalDateTime loggedAt, Double estimatedEmission) {
+        this.id = id;
+        this.activityType = activityType;
+        this.user = user;
+        this.quantity = quantity;
+        this.activityDate = activityDate;
+        this.loggedAt = loggedAt;
+        this.estimatedEmission = estimatedEmission;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.loggedAt = LocalDateTime.now();
+    }
+
+    // Getters & Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -45,8 +61,8 @@ public class ActivityLog {
     public LocalDate getActivityDate() { return activityDate; }
     public void setActivityDate(LocalDate activityDate) { this.activityDate = activityDate; }
 
+    public LocalDateTime getLoggedAt() { return loggedAt; }
+
     public Double getEstimatedEmission() { return estimatedEmission; }
     public void setEstimatedEmission(Double estimatedEmission) { this.estimatedEmission = estimatedEmission; }
-
-    public LocalDateTime getLoggedAt() { return loggedAt; }
 }
