@@ -5,7 +5,6 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.exception.ValidationException;
 import com.example.demo.repository.ActivityCategoryRepository;
 import com.example.demo.service.ActivityCategoryService;
-
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,8 +31,7 @@ public class ActivityCategoryServiceImpl implements ActivityCategoryService {
     @Override
     public ActivityCategory getCategory(Long id) {
         return categoryRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Category not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
     }
 
     @Override
