@@ -4,7 +4,7 @@ import com.example.demo.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +16,10 @@ public class JwtUtil {
 
     private static final long EXPIRATION = 1000 * 60 * 60 * 10;
 
-    private final Key key = Keys.hmacShaKeyFor(SECRET.getBytes());
+    // ✅ MUST be SecretKey for jjwt 0.12.x
+    private final SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes());
+
+    /* ================= TOKEN CREATION ================= */
 
     public String generateToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
@@ -36,16 +39,21 @@ public class JwtUtil {
         return generateToken(claims, user.getEmail());
     }
 
+    /* ================= TOKEN READING ================= */
+
     public String extractUsername(String token) {
-        return parseToken(token).getPayload().getSubject();
+        Claims claims = extractAllClaims(token);
+        return claims.getSubject();
     }
 
     public String extractRole(String token) {
-        return (String) parseToken(token).getPayload().get("role");
+        Claims claims = extractAllClaims(token);
+        return claims.get("role", String.class);
     }
 
     public Long extractUserId(String token) {
-        Object id = parseToken(token).getPayload().get("userId");
+        Claims claims = extractAllClaims(token);
+        Object id = claims.get("userId");
         return id == null ? null : Long.valueOf(id.toString());
     }
 
@@ -53,10 +61,16 @@ public class JwtUtil {
         return extractUsername(token).equals(username);
     }
 
+    /* ================= CORE PARSER ================= */
+
     public Jwt<?, ?> parseToken(String token) {
         return Jwts.parser()
-                .verifyWith(key)
+                .verifyWith(key)   // ✅ Correct type
                 .build()
                 .parse(token);
+    }
+
+    private Claims extractAllClaims(String token) {
+        return (Claims) parseToken(token).getPayload();
     }
 }
