@@ -1,6 +1,6 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -38,4 +38,6 @@ public class ActivityType {
 
     public ActivityCategory getCategory() { return category; }
     public void setCategory(ActivityCategory category) { this.category = category; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
 }
