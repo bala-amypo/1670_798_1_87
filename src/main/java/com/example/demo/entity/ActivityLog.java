@@ -1,6 +1,6 @@
 package com.example.demo.entity;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -29,7 +29,6 @@ public class ActivityLog {
 
     public ActivityLog() {}
 
-    // getters & setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -41,12 +40,4 @@ public class ActivityLog {
 
     public Double getQuantity() { return quantity; }
     public void setQuantity(Double quantity) { this.quantity = quantity; }
-
-    public LocalDate getActivityDate() { return activityDate; }
-    public void setActivityDate(LocalDate activityDate) { this.activityDate = activityDate; }
-
-    public Double getEstimatedEmission() { return estimatedEmission; }
-    public void setEstimatedEmission(Double estimatedEmission) { this.estimatedEmission = estimatedEmission; }
-
-    public LocalDateTime getLoggedAt() { return loggedAt; }
 }
