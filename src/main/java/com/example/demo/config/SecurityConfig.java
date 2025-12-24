@@ -20,36 +20,43 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfig {
 
-  @Bean
-  public JwtAuthenticationFilter jwtAuthenticationFilter(
-      JwtUtil jwtUtil,
-      CustomUserDetailsService userDetailsService) {
-    return new JwtAuthenticationFilter(jwtUtil, userDetailsService);
-  }
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter(
+            JwtUtil jwtUtil,
+            CustomUserDetailsService userDetailsService) {
+        return new JwtAuthenticationFilter(jwtUtil, userDetailsService);
+    }
 
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-  @Bean
-  public AuthenticationManager authenticationManager(
-      AuthenticationConfiguration config) throws Exception {
-    return config.getAuthenticationManager();
-  }
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
 
-  @Bean
-  public SecurityFilterChain filterChain(
-      HttpSecurity http,
-      JwtAuthenticationFilter jwtFilter) throws Exception {
+    @Bean
+    public SecurityFilterChain filterChain(
+            HttpSecurity http,
+            JwtAuthenticationFilter jwtFilter) throws Exception {
 
-    http
-        .csrf(csrf -> csrf.disable())
-        .authorizeHttpRequests(auth -> auth
-            .anyRequest().permitAll())
-        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        http
+            .csrf().disable()
 
-    return http.build();
-  }
+            // 🔓 ALLOW EVERYTHING (FOR NOW)
+            .authorizeRequests()
+            .antMatchers("/**").permitAll()
+            .anyRequest().permitAll();
 
+        // 🔹 JWT filter still present (does not block)
+        http.addFilterBefore(
+                jwtFilter,
+                UsernamePasswordAuthenticationFilter.class
+        );
+
+        return http.build();
+    }
 }
