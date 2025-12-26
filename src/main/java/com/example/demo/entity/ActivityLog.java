@@ -13,9 +13,11 @@ public class ActivityLog {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "activity_type_id")
     private ActivityType activityType;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     private Double quantity;
@@ -26,7 +28,8 @@ public class ActivityLog {
 
     private Double estimatedEmission;
 
-    public ActivityLog() {}
+    public ActivityLog() {
+    }
 
     public ActivityLog(Long id, ActivityType activityType, User user,
                        Double quantity, LocalDate activityDate,
@@ -41,28 +44,67 @@ public class ActivityLog {
     }
 
     @PrePersist
-    public void prePersist() {
-        this.loggedAt = LocalDateTime.now();
+    protected void prePersist() {
+        if (this.loggedAt == null) {
+            this.loggedAt = LocalDateTime.now();
+        }
     }
 
     // Getters & Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
 
-    public ActivityType getActivityType() { return activityType; }
-    public void setActivityType(ActivityType activityType) { this.activityType = activityType; }
-
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
-
-    public Double getQuantity() { return quantity; }
-    public void setQuantity(Double quantity) { this.quantity = quantity; }
-
-    public LocalDate getActivityDate() { return activityDate; }
-    public void setActivityDate(LocalDate activityDate) { this.activityDate = activityDate; }
-
-    public LocalDateTime getLoggedAt() { return loggedAt; }
-
-    public Double getEstimatedEmission() { return estimatedEmission; }
-    public void setEstimatedEmission(Double estimatedEmission) { this.estimatedEmission = estimatedEmission; }
+    public Long getId() {
+        return id;
+    }
+ 
+    public void setId(Long id) {
+        this.id = id;
+    }
+ 
+    public ActivityType getActivityType() {
+        return activityType;
+    }
+ 
+    public void setActivityType(ActivityType activityType) {
+        this.activityType = activityType;
+    }
+ 
+    public User getUser() {
+        return user;
+    }
+ 
+    public void setUser(User user) {
+        this.user = user;
+    }
+ 
+    public Double getQuantity() {
+        return quantity;
+    }
+ 
+    public void setQuantity(Double quantity) {
+        this.quantity = quantity;
+    }
+ 
+    public LocalDate getActivityDate() {
+        return activityDate;
+    }
+ 
+    public void setActivityDate(LocalDate activityDate) {
+        this.activityDate = activityDate;
+    }
+ 
+    public LocalDateTime getLoggedAt() {
+        return loggedAt;
+    }
+ 
+    public void setLoggedAt(LocalDateTime loggedAt) {
+        this.loggedAt = loggedAt;
+    }
+ 
+    public Double getEstimatedEmission() {
+        return estimatedEmission;
+    }
+ 
+    public void setEstimatedEmission(Double estimatedEmission) {
+        this.estimatedEmission = estimatedEmission;
+    }
 }
