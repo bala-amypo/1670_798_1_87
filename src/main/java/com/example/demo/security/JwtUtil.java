@@ -53,10 +53,7 @@ public class JwtUtil {
 
     public Long extractUserId(String token) {
         Object id = getClaims(token).get("userId");
-        if (id instanceof Integer) {
-            return ((Integer) id).longValue();
-        }
-        return (Long) id;
+        return ((Number) id).longValue();
     }
 
     public boolean isTokenValid(String token, String username) {
@@ -68,16 +65,18 @@ public class JwtUtil {
     }
 
     private Claims getClaims(String token) {
-        return Jwts.parser()
+        return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
 
-    // kept for tests
+    // ✅ THIS METHOD MUST USE parserBuilder()
     public Jwt<?, ?> parseToken(String token) {
-        return Jwts.parser()
+        return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
+                .build()
                 .parse(token);
     }
 }
