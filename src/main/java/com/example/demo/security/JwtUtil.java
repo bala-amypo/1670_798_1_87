@@ -20,6 +20,8 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
 
+    /* ================= TOKEN GENERATION ================= */
+
     public String generateTokenForUser(User user) {
         return Jwts.builder()
                 .claim("userId", user.getId())
@@ -32,10 +34,45 @@ public class JwtUtil {
                 .compact();
     }
 
+    /* ================= TOKEN PARSING ================= */
+
     public Jwt<?, ?> parseToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
                 .build()
                 .parse(token);
+    }
+
+    private Claims getClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    /* ================= CLAIM EXTRACTION ================= */
+
+    public String extractUsername(String token) {
+        return getClaims(token).getSubject();
+    }
+
+    public String extractRole(String token) {
+        return (String) getClaims(token).get("role");
+    }
+
+    public Long extractUserId(String token) {
+        Object id = getClaims(token).get("userId");
+        return ((Number) id).longValue();
+    }
+
+    /* ================= VALIDATION ================= */
+
+    public boolean isTokenValid(String token, String username) {
+        try {
+            return extractUsername(token).equals(username);
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
