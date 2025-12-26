@@ -14,14 +14,16 @@ public class ActivityCategoryServiceImpl implements ActivityCategoryService {
 
     private final ActivityCategoryRepository categoryRepository;
 
-    public ActivityCategoryServiceImpl(ActivityCategoryRepository categoryRepository) {
+    public ActivityCategoryServiceImpl(
+            ActivityCategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
     }
 
     @Override
     public ActivityCategory createCategory(ActivityCategory category) {
 
-        if (categoryRepository.existsByCategoryName(category.getCategoryName())) {
+        if (categoryRepository.existsByCategoryName(
+                category.getCategoryName())) {
             throw new ValidationException("Category name must be unique");
         }
 
@@ -31,7 +33,8 @@ public class ActivityCategoryServiceImpl implements ActivityCategoryService {
     @Override
     public ActivityCategory getCategory(Long id) {
         return categoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Category not found"));
     }
 
     @Override

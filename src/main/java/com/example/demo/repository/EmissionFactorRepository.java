@@ -5,7 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface EmissionFactorRepository extends JpaRepository<EmissionFactor, Long> {
+public interface EmissionFactorRepository
+        extends JpaRepository<EmissionFactor, Long> {
 
     Optional<EmissionFactor> findByActivityType_Id(Long activityTypeId);
 }
