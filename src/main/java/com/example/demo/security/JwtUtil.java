@@ -11,9 +11,9 @@ import java.util.Map;
 public class JwtUtil {
 
     private static final String SECRET_KEY =
-            "mysecretkeymysecretkeymysecretkeymysecretkey"; // min 32 chars
+            "mysecretkeymysecretkeymysecretkeymysecretkey";
 
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour
+    private static final long EXPIRATION_TIME = 1000 * 60 * 60;
 
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
@@ -41,16 +41,18 @@ public class JwtUtil {
                 .compact();
     }
 
+    /* ---------------- FIXED METHODS ---------------- */
+
     public String extractUsername(String token) {
-        return parseToken(token).getPayload().getSubject();
+        return getClaims(token).getSubject();
     }
 
     public String extractRole(String token) {
-        return (String) parseToken(token).getPayload().get("role");
+        return (String) getClaims(token).get("role");
     }
 
     public Long extractUserId(String token) {
-        Object id = parseToken(token).getPayload().get("userId");
+        Object id = getClaims(token).get("userId");
         if (id instanceof Integer) {
             return ((Integer) id).longValue();
         }
@@ -59,17 +61,28 @@ public class JwtUtil {
 
     public boolean isTokenValid(String token, String username) {
         try {
-            String extractedUsername = extractUsername(token);
-            return extractedUsername.equals(username);
+            return extractUsername(token).equals(username);
         } catch (Exception e) {
             return false;
         }
     }
 
-    public Jwt<?, ?> parseToken(String token) {
-        return Jwts.parserBuilder()
+    /* ---------------- INTERNAL HELPERS ---------------- */
+
+    private Claims getClaims(String token) {
+        return Jwts.parser()
                 .setSigningKey(getSigningKey())
-                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    /**
+     * Kept ONLY for test compatibility.
+     * Tests call parseToken(token) and expect no crash.
+     */
+    public Jwt<?, ?> parseToken(String token) {
+        return Jwts.parser()
+                .setSigningKey(getSigningKey())
                 .parse(token);
     }
 }
