@@ -12,45 +12,32 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
-
     private final UserService userService;
-    private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
 
-    public AuthController(UserService userService,
-                          AuthenticationManager authenticationManager,
-                          JwtUtil jwtUtil) {
+    public AuthController(UserService userService, JwtUtil jwtUtil, AuthenticationManager authenticationManager) {
         this.userService = userService;
-        this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
+        this.authenticationManager = authenticationManager;
     }
 
     @PostMapping("/register")
-    public User register(@RequestBody RegisterRequest request) {
-
-        User user = new User();
-        user.setFullName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
-
-        return userService.registerUser(user);
+    public Map<String, Object> register(@RequestBody RegisterRequest request) {
+        User user = new User(null, request.getName(), request.getEmail(), request.getPassword(), "USER", null);
+        User created = userService.registerUser(user);
+        String token = jwtUtil.generateTokenForUser(created);
+        return Map.of("user", created, "token", token);
     }
 
     @PostMapping("/login")
     public Map<String, String> login(@RequestBody LoginRequest request) {
-
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
+            new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
-
-        User user = userService.getByEmail(request.getEmail());
-        String token = jwtUtil.generateTokenForUser(user);
-
+        String token = jwtUtil.generateToken(Map.of(), request.getEmail());
         return Map.of("token", token);
     }
 }
