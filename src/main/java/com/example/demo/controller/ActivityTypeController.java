@@ -28,7 +28,7 @@ public class ActivityTypeController {
     }
 
     @GetMapping("/category/{categoryId}")
-    public List<ActivityType> getTypesByCategory(@PathVariable Long categoryId) {
+    public List<ActivityType> getByCategory(@PathVariable Long categoryId) {
         return typeService.getTypesByCategory(categoryId);
     }
 }

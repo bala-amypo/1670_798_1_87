@@ -17,17 +17,17 @@ public class ActivityCategoryController {
     }
 
     @PostMapping
-    public ActivityCategory createCategory(@RequestBody ActivityCategory category) {
+    public ActivityCategory create(@RequestBody ActivityCategory category) {
         return categoryService.createCategory(category);
     }
 
     @GetMapping
-    public List<ActivityCategory> getAllCategories() {
+    public List<ActivityCategory> getAll() {
         return categoryService.getAllCategories();
     }
 
     @GetMapping("/{id}")
-    public ActivityCategory getCategory(@PathVariable Long id) {
+    public ActivityCategory get(@PathVariable Long id) {
         return categoryService.getCategory(id);
     }
 }

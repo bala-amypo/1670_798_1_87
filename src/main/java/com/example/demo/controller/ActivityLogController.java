@@ -31,12 +31,12 @@ public class ActivityLogController {
     }
 
     @GetMapping("/user/{userId}")
-    public List<ActivityLog> getLogsByUser(@PathVariable Long userId) {
+    public List<ActivityLog> getByUser(@PathVariable Long userId) {
         return logService.getLogsByUser(userId);
     }
 
     @GetMapping("/user/{userId}/range")
-    public List<ActivityLog> getLogsByUserAndDate(
+    public List<ActivityLog> getByUserAndDate(
             @PathVariable Long userId,
             @RequestParam LocalDate start,
             @RequestParam LocalDate end) {
