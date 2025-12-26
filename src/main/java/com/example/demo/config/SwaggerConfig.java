@@ -21,7 +21,7 @@ public class SwaggerConfig {
 
                 // ✅ KEEP YOUR SERVER (unchanged)
                 .servers(List.of(
-                        new Server().url("https://9195.pro604cr.amypo.ai/")
+                        new Server().url("https://9195.pro604cr.amypo.ai")
                 ))
 
                 // ✅ ADD SECURITY REQUIREMENT (this triggers Authorize button)
