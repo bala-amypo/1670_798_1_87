@@ -20,22 +20,21 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
 
-    /* ================= TOKEN GENERATION ================= */
-
+    /* Generate JWT */
     public String generateTokenForUser(User user) {
         return Jwts.builder()
-                .claim("userId", user.getId())
-                .claim("email", user.getEmail())
-                .claim("role", user.getRole())
                 .setSubject(user.getEmail())
+                .claim("userId", user.getId())
+                .claim("role", user.getRole())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .setExpiration(
+                        new Date(System.currentTimeMillis() + EXPIRATION_TIME)
+                )
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    /* ================= TOKEN PARSING ================= */
-
+    /* Required by tests */
     public Jwt<?, ?> parseToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
@@ -51,8 +50,6 @@ public class JwtUtil {
                 .getBody();
     }
 
-    /* ================= CLAIM EXTRACTION ================= */
-
     public String extractUsername(String token) {
         return getClaims(token).getSubject();
     }
@@ -64,15 +61,5 @@ public class JwtUtil {
     public Long extractUserId(String token) {
         Object id = getClaims(token).get("userId");
         return ((Number) id).longValue();
-    }
-
-    /* ================= VALIDATION ================= */
-
-    public boolean isTokenValid(String token, String username) {
-        try {
-            return extractUsername(token).equals(username);
-        } catch (Exception e) {
-            return false;
-        }
     }
 }
