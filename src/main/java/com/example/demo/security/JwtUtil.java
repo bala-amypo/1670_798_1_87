@@ -3,11 +3,13 @@ package com.example.demo.security;
 import com.example.demo.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
 import java.util.Map;
 
+@Component   // ✅ THIS IS THE FIX
 public class JwtUtil {
 
     private static final String SECRET_KEY =
@@ -41,8 +43,6 @@ public class JwtUtil {
                 .compact();
     }
 
-    /* ---------------- FIXED METHODS ---------------- */
-
     public String extractUsername(String token) {
         return getClaims(token).getSubject();
     }
@@ -67,8 +67,6 @@ public class JwtUtil {
         }
     }
 
-    /* ---------------- INTERNAL HELPERS ---------------- */
-
     private Claims getClaims(String token) {
         return Jwts.parser()
                 .setSigningKey(getSigningKey())
@@ -76,10 +74,7 @@ public class JwtUtil {
                 .getBody();
     }
 
-    /**
-     * Kept ONLY for test compatibility.
-     * Tests call parseToken(token) and expect no crash.
-     */
+    // kept for tests
     public Jwt<?, ?> parseToken(String token) {
         return Jwts.parser()
                 .setSigningKey(getSigningKey())
