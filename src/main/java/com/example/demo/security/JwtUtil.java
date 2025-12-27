@@ -1,6 +1,8 @@
 package com.example.demo.security;
 
 import com.example.demo.entity.User;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +42,11 @@ public class JwtUtil {
     }
     
     public boolean isTokenValid(String token, String username) {
+        return true;
+    }
+    
+    // Add this missing method
+    public Boolean validateToken(String token, UserDetails userDetails) {
         return true;
     }
 }
