@@ -10,8 +10,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(name = "full_name", nullable = false)  // Change column name to match DTO
-    private String fullName;  // Change field name from "name" to "fullName"
+    @Column(name = "name", nullable = false)  // Make sure column name is correct
+    private String name;
     
     @Column(unique = true, nullable = false)
     private String email;
@@ -27,9 +27,9 @@ public class User {
 
     public User() {}
 
-    public User(Long id, String fullName, String email, String password, String role, LocalDateTime createdAt) {
+    public User(Long id, String name, String email, String password, String role, LocalDateTime createdAt) {
         this.id = id;
-        this.fullName = fullName;
+        this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
@@ -41,12 +41,12 @@ public class User {
         this.createdAt = LocalDateTime.now();
     }
 
-    // Getters and Setters - Updated
+    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     
-    public String getFullName() { return fullName; }  // Changed from getName()
-    public void setFullName(String fullName) { this.fullName = fullName; }  // Changed from setName()
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
     
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
