@@ -23,7 +23,7 @@ public class OpenApiConfig {
                         .description("Carbon Footprint Estimator REST API")
                 )
                 .servers(List.of(
-                        new Server().url("https://9092.pro604cr.amypo.ai")
+                        new Server().url("https://9195.pro604cr.amypo.ai")
                 ))
                 .components(new Components()
                         .addSecuritySchemes("bearerAuth",
