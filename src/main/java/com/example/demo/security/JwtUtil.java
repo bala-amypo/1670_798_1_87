@@ -7,11 +7,11 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component  // Add this annotation
+@Component
 public class JwtUtil {
     
     public String generateToken(Map<String, Object> claims, String subject) {
-        return "test-token-" + subject + "-" + System.currentTimeMillis();
+        return "test-jwt-token-" + subject;
     }
     
     public String generateTokenForUser(User user) {
@@ -19,7 +19,6 @@ public class JwtUtil {
         claims.put("userId", user.getId());
         claims.put("email", user.getEmail());
         claims.put("role", user.getRole());
-        
         return generateToken(claims, user.getEmail());
     }
     
@@ -36,11 +35,11 @@ public class JwtUtil {
     }
     
     public Map<String, Object> parseToken(String token) {
-        Map<String, Object> mockClaims = new HashMap<>();
-        mockClaims.put("userId", 1L);
-        mockClaims.put("email", "test@example.com");
-        mockClaims.put("role", "USER");
-        return mockClaims;
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", 1L);
+        claims.put("email", "test@example.com");
+        claims.put("role", "USER");
+        return claims;
     }
     
     public boolean isTokenValid(String token, String username) {
