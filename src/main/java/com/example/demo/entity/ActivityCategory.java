@@ -33,6 +33,7 @@ public class ActivityCategory {
     
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @ToString.Exclude
+    @Builder.Default
     private List<ActivityType> activityTypes = new ArrayList<>();
     
     @PrePersist

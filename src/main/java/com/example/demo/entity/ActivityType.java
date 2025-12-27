@@ -38,10 +38,12 @@ public class ActivityType {
     
     @OneToMany(mappedBy = "activityType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @ToString.Exclude
+    @Builder.Default
     private List<ActivityLog> activityLogs = new ArrayList<>();
     
     @OneToMany(mappedBy = "activityType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @ToString.Exclude
+    @Builder.Default
     private List<EmissionFactor> emissionFactors = new ArrayList<>();
     
     @PrePersist

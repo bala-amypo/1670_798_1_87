@@ -42,4 +42,4 @@ public class ActivityTypeController {
         List<ActivityType> types = typeService.getAllTypes();
         return ResponseEntity.ok(types);
     }
-}
+}   

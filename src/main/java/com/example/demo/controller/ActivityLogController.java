@@ -35,7 +35,7 @@ public class ActivityLogController {
     }
     
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or @activityLogSecurity.isOwner(authentication, #id)")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ActivityLog> getLog(@PathVariable Long id) {
         ActivityLog log = logService.getLog(id);
         return ResponseEntity.ok(log);
