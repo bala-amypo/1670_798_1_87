@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.ActivityCategory;
 import com.example.demo.service.ActivityCategoryService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,7 +18,7 @@ public class ActivityCategoryController {
     
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ActivityCategory> createCategory(@Valid @RequestBody ActivityCategory category) {
+    public ResponseEntity<ActivityCategory> createCategory(@RequestBody ActivityCategory category) {
         ActivityCategory created = categoryService.createCategory(category);
         return ResponseEntity.ok(created);
     }

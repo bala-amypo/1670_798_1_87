@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.ActivityType;
 import com.example.demo.service.ActivityTypeService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,7 +19,7 @@ public class ActivityTypeController {
     @PostMapping("/category/{categoryId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ActivityType> createType(@PathVariable Long categoryId, 
-                                                   @Valid @RequestBody ActivityType type) {
+                                                   @RequestBody ActivityType type) {
         ActivityType created = typeService.createType(categoryId, type);
         return ResponseEntity.ok(created);
     }
@@ -42,4 +41,4 @@ public class ActivityTypeController {
         List<ActivityType> types = typeService.getAllTypes();
         return ResponseEntity.ok(types);
     }
-}   
+}
