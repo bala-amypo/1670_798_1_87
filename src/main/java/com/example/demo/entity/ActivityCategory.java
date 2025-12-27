@@ -1,21 +1,10 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "activity_categories")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@EntityListeners(AuditingEntityListener.class)
 public class ActivityCategory {
     
     @Id
@@ -27,14 +16,31 @@ public class ActivityCategory {
     
     private String description;
     
-    @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
     
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @ToString.Exclude
-    @Builder.Default
-    private List<ActivityType> activityTypes = new ArrayList<>();
+    // Constructors
+    public ActivityCategory() {}
+    
+    public ActivityCategory(Long id, String categoryName, String description, LocalDateTime createdAt) {
+        this.id = id;
+        this.categoryName = categoryName;
+        this.description = description;
+        this.createdAt = createdAt;
+    }
+    
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    
+    public String getCategoryName() { return categoryName; }
+    public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
+    
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+    
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     
     @PrePersist
     public void prePersist() {
