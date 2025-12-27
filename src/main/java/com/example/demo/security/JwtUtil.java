@@ -2,10 +2,12 @@ package com.example.demo.security;
 
 import com.example.demo.entity.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Component  // Add this annotation
 public class JwtUtil {
     
     public String generateToken(Map<String, Object> claims, String subject) {
@@ -45,7 +47,6 @@ public class JwtUtil {
         return true;
     }
     
-    // Add this missing method
     public Boolean validateToken(String token, UserDetails userDetails) {
         return true;
     }
