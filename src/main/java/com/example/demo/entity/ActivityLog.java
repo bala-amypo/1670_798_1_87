@@ -7,34 +7,32 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "activity_logs")
 public class ActivityLog {
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "activity_type_id", nullable = false)
+    @JoinColumn(name = "activity_type_id")
     private ActivityType activityType;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
     
     @Column(nullable = false)
     private Double quantity;
     
-    @Column(nullable = false)
+    @Column(name = "activity_date", nullable = false)
     private LocalDate activityDate;
     
-    @Column(nullable = false, updatable = false)
+    @Column(name = "logged_at")
     private LocalDateTime loggedAt;
     
-    @Column(nullable = false)
+    @Column(name = "estimated_emission")
     private Double estimatedEmission;
-    
-    public ActivityLog() {
-    }
-    
+
+    public ActivityLog() {}
+
     public ActivityLog(Long id, ActivityType activityType, User user, Double quantity, 
                       LocalDate activityDate, LocalDateTime loggedAt, Double estimatedEmission) {
         this.id = id;
@@ -45,33 +43,24 @@ public class ActivityLog {
         this.loggedAt = loggedAt;
         this.estimatedEmission = estimatedEmission;
     }
-    
+
     @PrePersist
     public void prePersist() {
-        if (loggedAt == null) {
-            loggedAt = LocalDateTime.now();
-        }
+        this.loggedAt = LocalDateTime.now();
     }
-    
-    // Getters and Setters
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-    
     public ActivityType getActivityType() { return activityType; }
     public void setActivityType(ActivityType activityType) { this.activityType = activityType; }
-    
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
-    
     public Double getQuantity() { return quantity; }
     public void setQuantity(Double quantity) { this.quantity = quantity; }
-    
     public LocalDate getActivityDate() { return activityDate; }
     public void setActivityDate(LocalDate activityDate) { this.activityDate = activityDate; }
-    
     public LocalDateTime getLoggedAt() { return loggedAt; }
     public void setLoggedAt(LocalDateTime loggedAt) { this.loggedAt = loggedAt; }
-    
     public Double getEstimatedEmission() { return estimatedEmission; }
     public void setEstimatedEmission(Double estimatedEmission) { this.estimatedEmission = estimatedEmission; }
 }
