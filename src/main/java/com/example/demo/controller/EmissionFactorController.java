@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.EmissionFactor;
 import com.example.demo.service.EmissionFactorService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,7 +19,7 @@ public class EmissionFactorController {
     @PostMapping("/type/{activityTypeId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EmissionFactor> createFactor(@PathVariable Long activityTypeId,
-                                                       @Valid @RequestBody EmissionFactor factor) {
+                                                       @RequestBody EmissionFactor factor) {
         EmissionFactor created = factorService.createFactor(activityTypeId, factor);
         return ResponseEntity.ok(created);
     }

@@ -3,7 +3,6 @@ package com.example.demo.controller;
 import com.example.demo.dto.ActivityLogRequest;
 import com.example.demo.entity.ActivityLog;
 import com.example.demo.service.ActivityLogService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -24,11 +23,10 @@ public class ActivityLogController {
     @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and #userId == authentication.principal.userId)")
     public ResponseEntity<ActivityLog> logActivity(@PathVariable Long userId,
                                                   @PathVariable Long typeId,
-                                                  @Valid @RequestBody ActivityLogRequest request) {
-        ActivityLog log = ActivityLog.builder()
-                .quantity(request.getQuantity())
-                .activityDate(request.getActivityDate())
-                .build();
+                                                  @RequestBody ActivityLogRequest request) {
+        ActivityLog log = new ActivityLog();
+        log.setQuantity(request.getQuantity());
+        log.setActivityDate(request.getActivityDate());
         
         ActivityLog created = logService.logActivity(userId, typeId, log);
         return ResponseEntity.ok(created);

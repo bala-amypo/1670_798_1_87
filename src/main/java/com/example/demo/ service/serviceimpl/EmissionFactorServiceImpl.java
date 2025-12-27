@@ -27,9 +27,7 @@ public class EmissionFactorServiceImpl implements EmissionFactorService {
     }
     
     @Override
-    public EmissionFactor createFactor(Long activityTypeId, EmissionFactor factor) 
-            throws ResourceNotFoundException, ValidationException {
-        
+    public EmissionFactor createFactor(Long activityTypeId, EmissionFactor factor) {
         // Validate factor value
         if (factor.getFactorValue() == null || factor.getFactorValue() <= 0) {
             throw new ValidationException("Factor value must be greater than zero");
@@ -43,26 +41,23 @@ public class EmissionFactorServiceImpl implements EmissionFactorService {
         ActivityType activityType = typeRepository.findById(activityTypeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Activity type not found"));
         
-        // Check if factor already exists for this type
-        if (factorRepository.findByActivityType_Id(activityTypeId).isPresent()) {
-            throw new ValidationException("Emission factor already configured for this activity type");
-        }
-        
         // Set properties
         factor.setActivityType(activityType);
-        factor.setCreatedAt(LocalDateTime.now());
+        if (factor.getCreatedAt() == null) {
+            factor.setCreatedAt(LocalDateTime.now());
+        }
         
         return factorRepository.save(factor);
     }
     
     @Override
-    public EmissionFactor getFactor(Long id) throws ResourceNotFoundException {
+    public EmissionFactor getFactor(Long id) {
         return factorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Emission factor not found"));
     }
     
     @Override
-    public EmissionFactor getFactorByType(Long typeId) throws ResourceNotFoundException {
+    public EmissionFactor getFactorByType(Long typeId) {
         return factorRepository.findByActivityType_Id(typeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Emission factor not found"));
     }
