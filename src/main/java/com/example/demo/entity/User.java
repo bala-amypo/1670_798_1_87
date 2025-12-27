@@ -10,7 +10,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(name = "name", nullable = false)  // Make sure column name is correct
+    @Column(name = "full_name", nullable = false)  // Change to match database column name
     private String name;
     
     @Column(unique = true, nullable = false)
