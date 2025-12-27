@@ -1,62 +1,77 @@
 package com.example.demo.security;
 
 import com.example.demo.entity.User;
-import org.springframework.stereotype.Component;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 
-import java.util.HashMap;
+import java.security.Key;
+import java.util.Date;
 import java.util.Map;
 
-@Component
 public class JwtUtil {
-    
+
+    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private final long expiration = 1000 * 60 * 60;
+
     public String generateToken(Map<String, Object> claims, String subject) {
-        // Simple token for testing
-        return "jwt-test-token-" + subject + "-" + System.currentTimeMillis();
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(subject)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(key)
+                .compact();
     }
-    
+
     public String generateTokenForUser(User user) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("userId", user.getId());
-        claims.put("email", user.getEmail());
-        claims.put("role", user.getRole());
-        claims.put("name", user.getName());
-        
-        return generateToken(claims, user.getEmail());
+        return Jwts.builder()
+                .claim("userId", user.getId())
+                .claim("email", user.getEmail())
+                .claim("role", user.getRole())
+                .setSubject(user.getEmail())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(key)
+                .compact();
     }
-    
+
+    public ParsedJwt parseToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return new ParsedJwt(claims);
+    }
+
     public String extractUsername(String token) {
-        // Simple extraction for testing
-        if (token.startsWith("jwt-test-token-")) {
-            String[] parts = token.split("-");
-            if (parts.length >= 4) {
-                return parts[3];
-            }
-        }
-        return "test@example.com";
+        return parseToken(token).getPayload().getSubject();
     }
-    
-    public Long extractUserId(String token) {
-        return 1L; // Return test user ID
-    }
-    
+
     public String extractRole(String token) {
-        return "USER"; // Return test role
+        return parseToken(token).getPayload().get("role", String.class);
     }
-    
-    public Map<String, Object> parseToken(String token) {
-        Map<String, Object> mockClaims = new HashMap<>();
-        mockClaims.put("userId", 1L);
-        mockClaims.put("email", "test@example.com");
-        mockClaims.put("role", "USER");
-        mockClaims.put("name", "Test User");
-        return mockClaims;
+
+    public Long extractUserId(String token) {
+        return parseToken(token).getPayload().get("userId", Long.class);
     }
-    
+
     public boolean isTokenValid(String token, String username) {
-        return true; // Always valid for testing
+        return extractUsername(token).equals(username);
     }
-    
-    public Boolean validateToken(String token, org.springframework.security.core.userdetails.UserDetails userDetails) {
-        return true; // Always valid for testing
+
+    public static class ParsedJwt {
+
+        private final Claims payload;
+
+        public ParsedJwt(Claims payload) {
+            this.payload = payload;
+        }
+
+        public Claims getPayload() {
+            return payload;
+        }
     }
 }

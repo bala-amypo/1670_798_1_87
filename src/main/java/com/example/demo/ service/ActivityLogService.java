@@ -5,7 +5,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface ActivityLogService {
-    List<ActivityLog> getLogsByUserAndDate(Long userId, LocalDate startDate, LocalDate endDate);
+    ActivityLog logActivity(Long userId, Long typeId, ActivityLog log);
     List<ActivityLog> getLogsByUser(Long userId);
-    ActivityLog logActivity(Long userId, Long activityTypeId, ActivityLog log);
+    List<ActivityLog> getLogsByUserAndDate(Long userId, LocalDate start, LocalDate end);
+    ActivityLog getLog(Long id);
 }
