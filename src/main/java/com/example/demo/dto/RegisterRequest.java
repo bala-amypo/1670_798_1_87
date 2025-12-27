@@ -1,7 +1,7 @@
 package com.example.demo.dto;
 
 public class RegisterRequest {
-    private String name;  // Make sure it's "name" not "full_name"
+    private String name;
     private String email;
     private String password;
 
