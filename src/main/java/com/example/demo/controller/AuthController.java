@@ -102,6 +102,15 @@ public class AuthController {
         }
     }
     
-    // Add userRepository dependency
     private final com.example.demo.repository.UserRepository userRepository;
+    public AuthController(UserService userService, JwtUtil jwtUtil, 
+                     AuthenticationManager authenticationManager, 
+                     PasswordEncoder passwordEncoder,
+                     com.example.demo.repository.UserRepository userRepository) {
+    this.userService = userService;
+    this.jwtUtil = jwtUtil;
+    this.authenticationManager = authenticationManager;
+    this.passwordEncoder = passwordEncoder;
+    this.userRepository = userRepository;
+}
 }
