@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.RegisterRequest;
 import com.example.demo.entity.User;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.security.JwtUtil;
 import com.example.demo.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,14 +29,18 @@ public class AuthController {
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
     
+    // Single constructor with all dependencies
     public AuthController(UserService userService, JwtUtil jwtUtil, 
                          AuthenticationManager authenticationManager, 
-                         PasswordEncoder passwordEncoder) {
+                         PasswordEncoder passwordEncoder,
+                         UserRepository userRepository) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/register")
@@ -45,7 +50,7 @@ public class AuthController {
         User user = new User();
         user.setName(request.getName());
         user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword())); // Encode password
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole("USER");
         user.setCreatedAt(LocalDateTime.now());
         
@@ -101,16 +106,4 @@ public class AuthController {
             return ResponseEntity.status(401).body(errorResponse);
         }
     }
-    
-    private final com.example.demo.repository.UserRepository userRepository;
-    public AuthController(UserService userService, JwtUtil jwtUtil, 
-                     AuthenticationManager authenticationManager, 
-                     PasswordEncoder passwordEncoder,
-                     com.example.demo.repository.UserRepository userRepository) {
-    this.userService = userService;
-    this.jwtUtil = jwtUtil;
-    this.authenticationManager = authenticationManager;
-    this.passwordEncoder = passwordEncoder;
-    this.userRepository = userRepository;
-}
 }
